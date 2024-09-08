@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.8/purify.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,11 +81,88 @@
         }
         .applied { background-color: #ffc107; }
         .interviewing { background-color: #17a2b8; }
-        .offered { background-color: #28a745; }
+        .offered { background-color: #28a745; color: #fff; }
         .rejected { background-color: #dc3545; color: #fff; }
         #linked-notes-editor {
             height: 300px;
             margin-bottom: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .note-chip {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            font-size: 0.9em;
+            position: relative;
+            padding-right: 30px;
+            max-width: none; /* Remove max-width */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .unlink-note {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-weight: bold;
+            color: #888;
+            font-size: 1.2em;
+            line-height: 1;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .unlink-note:hover {
+            color: #fff;
+            background-color: #dc3545;
         }
     </style>
 </head>
@@ -104,15 +182,15 @@
         <div class="job-content">
             <div class="main-content">
                 <div class="job-section">
-                    <h2>Job Description</h2>
-                    <p><%= job.jobDescription %></p>
-                </div>
-                
-                <div class="job-section">
                     <h2>Technologies</h2>
                     <% job.technologies.forEach(tech => { %>
                         <span class="tech-tag"><%= tech %></span>
                     <% }) %>
+                </div>
+                
+                <div class="job-section">
+                    <h2>Job Description</h2>
+                    <p><%= job.jobDescription %></p>
                 </div>
                 
                 <div class="job-section">
@@ -134,49 +212,182 @@
             
             <div class="right-panel">
                 <div class="job-section">
-                    <h2>Linked Notes</h2>
-                    <div id="linked-notes-editor"></div>
-                    <button id="link-notes-btn" class="btn btn-secondary">Link Notes</button>
-                </div>
-                
-                <div class="job-section">
                     <h2>Actions</h2>
                     <a href="/jobs/<%= job._id %>/edit" class="btn btn-primary">Edit Job</a>
                     <button id="delete-job-btn" class="btn btn-danger">Delete Job</button>
+                </div>
+
+                <div class="job-section">
+                    <h2>Linked Notes</h2>
+                    <div id="linked-notes-chips"></div>
+                    <button id="link-notes-btn" class="btn btn-secondary">Link Notes</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Initialize Quill editor
-        var quill = new Quill('#linked-notes-editor', {
-            theme: 'snow',
-            readOnly: true // Make it read-only initially
-        });
+    <!-- Replace the noteContentModal with this -->
+    <div id="noteContentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="note-title">Note Content</h2>
+            <div id="note-content"></div>
+        </div>
+    </div>
 
-        // Function to render linked notes in Quill
-        function renderLinkedNotes() {
-            let notesContent = '';
-            <% if (job.relatedNotes && job.relatedNotes.length > 0) { %>
-                <% job.relatedNotes.forEach(note => { %>
-                    notesContent += '<h3>Note</h3>';
-                    notesContent += '<p><%= note.content %></p>';
-                    <% if (note.createdAt) { %>
-                        notesContent += '<small><%= note.createdAt.toLocaleString() %></small>';
-                    <% } else { %>
-                        notesContent += '<small>Date not available</small>';
-                    <% } %>
-                    notesContent += '<hr>';
-                <% }) %>
-            <% } else { %>
-                notesContent = '<p>No related notes found.</p>';
-            <% } %>
-            quill.root.innerHTML = notesContent;
+    <!-- Replace the existing linkNotesModal with this improved version -->
+    <div id="linkNotesModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Link Notes</h2>
+            <input type="text" id="noteSearchInput" placeholder="Search notes..." style="width: 100%; padding: 10px; margin-bottom: 10px;">
+            <select id="availableNotes" multiple style="width: 100%; height: 200px;">
+                <!-- Options will be dynamically added here -->
+            </select>
+            <button id="submitLinkedNotes" class="btn btn-primary" style="margin-top: 10px;">Link Selected Notes</button>
+        </div>
+    </div>
+
+    <script>
+        console.log('Job object:', <%- JSON.stringify(job) %>);
+        console.log('Related notes:', <%- JSON.stringify(job.relatedNotes || []) %>);
+
+        function renderLinkedNotesChips() {
+            fetch('/jobs/<%= job._id %>/related-notes')
+                .then(response => response.json())
+                .then(relatedNotes => {
+                    const chipsContainer = document.getElementById('linked-notes-chips');
+                    if (!chipsContainer) {
+                        console.error('Chips container not found');
+                        return;
+                    }
+                    chipsContainer.innerHTML = '';
+                    
+                    if (relatedNotes.length === 0) {
+                        chipsContainer.innerHTML = '<p>No linked notes yet.</p>';
+                        return;
+                    }
+
+                    relatedNotes.forEach(note => {
+                        const chip = document.createElement('span');
+                        chip.className = 'note-chip';
+                        chip.title = note.content; // Add full content as tooltip
+                        chip.innerHTML = `
+                            ${note.title || 'Untitled Note'}
+                            <span class="unlink-note" data-note-id="${note._id}">&times;</span>
+                        `;
+                        const unlinkButton = chip.querySelector('.unlink-note');
+                        if (unlinkButton) {
+                            unlinkButton.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                unlinkNote(note._id);
+                            });
+                        }
+                        chip.addEventListener('click', () => openNoteContent(note));
+                        chipsContainer.appendChild(chip);
+                    });
+                })
+                .catch(error => console.error('Error fetching related notes:', error));
         }
 
-        // Call the function to render notes when page loads
-        renderLinkedNotes();
+        // Call renderLinkedNotesChips when the page loads
+        document.addEventListener('DOMContentLoaded', renderLinkedNotesChips);
+
+        function openNoteContent(note) {
+            const modal = document.getElementById('noteContentModal');
+            const titleElement = document.getElementById('note-title');
+            const contentElement = document.getElementById('note-content');
+            
+            modal.style.display = 'block';
+            titleElement.textContent = note.title || 'Untitled Note';
+            
+            // Use DOMPurify to sanitize the HTML content
+            contentElement.innerHTML = DOMPurify.sanitize(note.content);
+        }
+
+        // Get the modals
+        var linkNotesModal = document.getElementById("linkNotesModal");
+        var noteContentModal = document.getElementById("noteContentModal");
+
+        // Get the button that opens the link notes modal
+        var linkNotesBtn = document.getElementById("link-notes-btn");
+
+        // Get the <span> elements that close the modals
+        var spans = document.getElementsByClassName("close");
+
+        // When the user clicks the button, open the link notes modal
+        linkNotesBtn.onclick = function() {
+            linkNotesModal.style.display = "block";
+            fetchAvailableNotes();
+        }
+
+        // When the user clicks on <span> (x), close the modals
+        for (let span of spans) {
+            span.onclick = function() {
+                linkNotesModal.style.display = "none";
+                noteContentModal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modals, close them
+        window.onclick = function(event) {
+            if (event.target == linkNotesModal) {
+                linkNotesModal.style.display = "none";
+            }
+            if (event.target == noteContentModal) {
+                noteContentModal.style.display = "none";
+            }
+        }
+
+        function fetchAvailableNotes() {
+            fetch('/jobs/<%= job._id %>/available-notes')
+                .then(response => response.json())
+                .then(notes => {
+                    const selectElement = document.getElementById('availableNotes');
+                    selectElement.innerHTML = '';
+                    notes.forEach(note => {
+                        const option = document.createElement('option');
+                        option.value = note._id;
+                        option.textContent = note.title || 'Untitled Note';
+                        selectElement.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching available notes:', error));
+        }
+
+        document.getElementById('noteSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const options = document.getElementById('availableNotes').options;
+            for (let i = 0; i < options.length; i++) {
+                const optionText = options[i].text.toLowerCase();
+                options[i].style.display = optionText.includes(searchTerm) ? '' : 'none';
+            }
+        });
+
+        document.getElementById('submitLinkedNotes').addEventListener('click', function() {
+            const selectedNotes = Array.from(document.getElementById('availableNotes').selectedOptions).map(option => option.value);
+            
+            fetch('/jobs/link-notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ jobId: '<%= job._id %>', noteIds: selectedNotes }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    linkNotesModal.style.display = "none";
+                    renderLinkedNotesChips();
+                } else {
+                    throw new Error(data.message || 'Error linking notes');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error linking notes: ' + error.message);
+            });
+        });
 
         document.getElementById('comment-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -188,19 +399,47 @@
                 },
                 body: JSON.stringify({ content }),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    location.reload();
+                    // Create new comment element
+                    const commentDiv = document.createElement('div');
+                    commentDiv.className = 'comment-item';
+                    commentDiv.innerHTML = `
+                        <p>${escapeHtml(data.comment.content)}</p>
+                        <small>${new Date(data.comment.createdAt).toLocaleString()}</small>
+                    `;
+                    
+                    // Add new comment to the list
+                    const commentsSection = document.querySelector('.job-section:nth-child(3)');
+                    commentsSection.insertBefore(commentDiv, document.getElementById('comment-form'));
+                    
+                    // Clear the form
+                    this.content.value = '';
                 } else {
-                    alert('Error adding comment');
+                    throw new Error(data.message || 'Error adding comment');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error adding comment');
+                alert('Error adding comment: ' + error.message);
             });
         });
+
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
 
         document.getElementById('delete-job-btn').addEventListener('click', function() {
             if (confirm('Are you sure you want to delete this job?')) {
@@ -221,12 +460,29 @@
             }
         });
 
-        document.getElementById('link-notes-btn').addEventListener('click', function() {
-            // Implement the logic to open a modal or navigate to a page for linking notes
-            alert('Link notes functionality to be implemented');
-            // After linking notes, you would typically fetch the updated job data
-            // and call renderLinkedNotes() again to update the Quill editor
-        });
+        function unlinkNote(noteId) {
+            if (confirm('Are you sure you want to unlink this note?')) {
+                fetch('/jobs/<%= job._id %>/unlink-note', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ noteId }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderLinkedNotesChips();
+                    } else {
+                        throw new Error(data.message || 'Error unlinking note');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error unlinking note: ' + error.message);
+                });
+            }
+        }
     </script>
 </body>
 </html>

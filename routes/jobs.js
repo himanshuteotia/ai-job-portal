@@ -62,6 +62,7 @@ router.get("/:id", async (req, res) => {
     }
 
     const job = await Job.findById(jobId).populate("relatedNotes");
+    console.log("Job with populated notes:", job);
     if (!job) {
       return res.status(404).send("Job not found");
     }
@@ -116,22 +117,17 @@ router.post("/link-notes", auth, async (req, res) => {
       return res.status(404).json({ message: "Job not found" });
     }
 
-    console.log("Current job.relatedNotes:", job.relatedNotes);
-
     // Convert string IDs to ObjectIds
     const noteObjectIds = noteIds.map((id) => mongoose.Types.ObjectId(id));
-    console.log("Note ObjectIds to add:", noteObjectIds);
 
     // Add new note IDs, avoiding duplicates
     job.relatedNotes = [...new Set([...job.relatedNotes, ...noteObjectIds])];
-    console.log("Updated job.relatedNotes:", job.relatedNotes);
 
     const savedJob = await job.save();
-    console.log("Saved job:", savedJob);
+    console.log("Saved job with linked notes:", savedJob);
 
     // Fetch the full note objects for the updated list
     const linkedNotes = await Note.find({ _id: { $in: job.relatedNotes } });
-    console.log("Fetched linked notes:", linkedNotes);
 
     res.json({ success: true, linkedNotes });
   } catch (error) {
@@ -144,7 +140,7 @@ router.post("/link-notes", auth, async (req, res) => {
   }
 });
 
-// Add this new route for fetching available notes
+// Add this new route for fetching available notes if not already present
 router.get("/:id/available-notes", auth, async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);
@@ -161,6 +157,49 @@ router.get("/:id/available-notes", auth, async (req, res) => {
   } catch (error) {
     console.error("Error fetching available notes:", error);
     res.status(500).json({ message: "Error fetching available notes" });
+  }
+});
+
+// Add this new route for unlinking a note
+router.post("/:id/unlink-note", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { noteId } = req.body;
+
+    const job = await Job.findById(id);
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job not found" });
+    }
+
+    // Remove the note from the relatedNotes array
+    job.relatedNotes = job.relatedNotes.filter(
+      (relatedNoteId) => relatedNoteId.toString() !== noteId
+    );
+
+    await job.save();
+
+    res.json({ success: true, message: "Note unlinked successfully" });
+  } catch (error) {
+    console.error("Error unlinking note:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while unlinking the note.",
+      error: error.message,
+    });
+  }
+});
+
+// Add this new route for fetching related notes
+router.get("/:id/related-notes", auth, async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id).populate("relatedNotes");
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    res.json(job.relatedNotes);
+  } catch (error) {
+    console.error("Error fetching related notes:", error);
+    res.status(500).json({ message: "Error fetching related notes" });
   }
 });
 
