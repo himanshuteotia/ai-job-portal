@@ -25,12 +25,6 @@ const jobSchema = new mongoose.Schema({
       },
     },
   ],
-  notes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Note",
-    },
-  ],
   relatedNotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Note" }],
 });
 

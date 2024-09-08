@@ -89,3 +89,17 @@ exports.linkNotes = async (req, res) => {
       .json({ message: "Error linking notes", error: error.message });
   }
 };
+
+exports.getJobDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findById(id).populate("relatedNotes");
+    if (!job) {
+      return res.status(404).render("error", { message: "Job not found" });
+    }
+    res.render("jobDetails", { job });
+  } catch (error) {
+    console.error("Error in getJobDetails:", error);
+    res.status(500).render("error", { message: "Error fetching job details" });
+  }
+};

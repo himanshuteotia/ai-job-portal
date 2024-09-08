@@ -1,69 +1,61 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
+    color: #333;
     background-color: #f4f4f4;
 }
 
-h1, h2 {
-    color: #333;
-}
-
-a {
-    color: #1a73e8;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .btn {
+    display: inline-block;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
+    text-decoration: none;
+    font-size: 1em;
     transition: background-color 0.3s;
 }
 
 .btn-primary {
-    background-color: #1a73e8;
-    color: white;
-}
-
-.btn-success {
-    background-color: #34a853;
-    color: white;
-}
-
-.btn-danger {
-    background-color: #ea4335;
+    background-color: #4CAF50;
     color: white;
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: #2196F3;
     color: white;
 }
 
-/* Add any other global styles here */
-
-#note-type-filter {
-    width: 100%;
-    padding: 8px;
-    margin-top: 10px;
-    border: 1px solid #e1e1e0;
-    border-radius: 3px;
-    font-size: 14px;
-    background-color: white;
+.btn-danger {
+    background-color: #f44336;
+    color: white;
 }
 
-.note-item[data-type="ai"] {
-    border-left: 3px solid #34a853;
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
-.note-item[data-type="manual"] {
-    border-left: 3px solid #4285f4;
+.status-badge.pending { background-color: #ffd700; color: #000; }
+.status-badge.in-process { background-color: #87ceeb; color: #000; }
+.status-badge.rejected { background-color: #ff6347; color: #fff; }
+
+@media (max-width: 768px) {
+    .job-content {
+        flex-direction: column;
+    }
+    
+    .right-panel {
+        margin-top: 20px;
+    }
 }

@@ -9,6 +9,7 @@ const noteController = require("../controllers/noteController"); // Add this lin
 const auth = require("../middleware/auth");
 const Job = require("../models/Job");
 const mongoose = require("mongoose");
+const Note = require("../models/Note"); // Add this at the top of the file
 
 // Main route for jobs listing
 router.get("/", auth, jobController.getJobs);
@@ -47,20 +48,26 @@ router.post("/update-profile", authController.updateProfile);
 router.get("/notes", auth, noteController.getNotes);
 
 // Job details route
-router.get("/:id", auth, async (req, res) => {
-  console.log(`Accessing job with ID: ${req.params.id}`);
+router.get("/:id", async (req, res) => {
+  // Favicon.ico request ko ignore karo
+  if (req.params.id === "favicon.ico") {
+    return res.status(204).end();
+  }
+
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const jobId = req.params.id;
+    // ObjectId validation
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).send("Invalid job ID");
     }
 
-    const job = await Job.findById(req.params.id).populate("notes");
+    const job = await Job.findById(jobId).populate("relatedNotes");
     if (!job) {
       return res.status(404).send("Job not found");
     }
     res.render("jobDetails", { job });
   } catch (error) {
-    console.error("Error in job details route:", error);
+    console.error("Error fetching job details:", error);
     res.status(500).send("Server error");
   }
 });
@@ -71,7 +78,7 @@ router.post("/:id/comments", async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);
     if (!job) {
-      return res.status(404).send("Job not found");
+      return res.status(404).json({ success: false, message: "Job not found" });
     }
 
     const newComment = {
@@ -82,10 +89,10 @@ router.post("/:id/comments", async (req, res) => {
     job.comments.push(newComment);
     await job.save();
 
-    res.redirect(`/jobs/${job._id}`);
+    res.json({ success: true, comment: newComment });
   } catch (error) {
     console.error("Error adding comment:", error);
-    res.status(500).send("Server error");
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -97,37 +104,63 @@ router.use((err, req, res, next) => {
   next(err);
 });
 
-// Add this new route for linking notes
-router.post("/:id/link-notes", auth, async (req, res) => {
+// Modify this route
+router.post("/link-notes", auth, async (req, res) => {
   try {
-    const { id } = req.params;
-    const { noteIds } = req.body;
+    const { jobId, noteIds } = req.body;
+    console.log(`Linking notes to job ${jobId}:`, noteIds);
 
-    console.log(`Linking notes to job ${id}:`, noteIds);
-
-    const job = await Job.findById(id);
+    const job = await Job.findById(jobId);
     if (!job) {
-      console.log(`Job not found: ${id}`);
+      console.log(`Job not found: ${jobId}`);
       return res.status(404).json({ message: "Job not found" });
     }
 
-    // Ensure job.notes is an array
-    if (!Array.isArray(job.notes)) {
-      job.notes = [];
-    }
+    console.log("Current job.relatedNotes:", job.relatedNotes);
+
+    // Convert string IDs to ObjectIds
+    const noteObjectIds = noteIds.map((id) => mongoose.Types.ObjectId(id));
+    console.log("Note ObjectIds to add:", noteObjectIds);
 
     // Add new note IDs, avoiding duplicates
-    job.notes = [...new Set([...job.notes, ...noteIds])];
-    await job.save();
+    job.relatedNotes = [...new Set([...job.relatedNotes, ...noteObjectIds])];
+    console.log("Updated job.relatedNotes:", job.relatedNotes);
 
-    const updatedJob = await Job.findById(id).populate("notes");
-    console.log(`Updated job:`, updatedJob);
-    res.json(updatedJob);
+    const savedJob = await job.save();
+    console.log("Saved job:", savedJob);
+
+    // Fetch the full note objects for the updated list
+    const linkedNotes = await Note.find({ _id: { $in: job.relatedNotes } });
+    console.log("Fetched linked notes:", linkedNotes);
+
+    res.json({ success: true, linkedNotes });
   } catch (error) {
     console.error("Error linking notes:", error);
-    res
-      .status(500)
-      .json({ message: "Error linking notes", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while linking notes.",
+      error: error.message,
+    });
+  }
+});
+
+// Add this new route for fetching available notes
+router.get("/:id/available-notes", auth, async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    const allNotes = await Note.find({ user: req.user._id });
+    const availableNotes = allNotes.filter(
+      (note) => !job.relatedNotes.includes(note._id)
+    );
+
+    res.json(availableNotes);
+  } catch (error) {
+    console.error("Error fetching available notes:", error);
+    res.status(500).json({ message: "Error fetching available notes" });
   }
 });
 
