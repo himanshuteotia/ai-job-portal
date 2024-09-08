@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Job</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="date"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <%- include('partials/richTextEditor') %>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Job</h1>
+        <form action="/add" method="POST">
+            <label for="companyName">Company Name:</label>
+            <input type="text" id="companyName" name="companyName" required>
+            
+            <label for="dateApplied">Date Applied:</label>
+            <input type="date" id="dateApplied" name="dateApplied" required>
+            
+            <label for="jobDescription">Job Description:</label>
+            <div class="rich-text-editor" data-input-name="jobDescription" style="height: 200px;"></div>
+            
+            <input type="submit" value="Add Job">
+        </form>
+        <a href="/" class="back-link">Back to Job Listings</a>
+    </div>
+</body>
+</html>

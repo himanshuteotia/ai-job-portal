@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-hover: #45a049;
+            --secondary-color: #2196F3;
+            --secondary-hover: #1E88E5;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+        .job-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .job-info p {
+            margin: 10px 0;
+        }
+        .tech-tag {
+            display: inline-block;
+            background-color: #e0e0e0;
+            padding: 3px 8px;
+            margin-right: 5px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .comments-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .comment {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .comment-form {
+            margin-top: 20px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        .comment-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .comment-form button:hover {
+            background-color: var(--primary-hover);
+        }
+        .back-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .back-icon:hover {
+            color: var(--primary-hover);
+        }
+
+        .notes-section {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .notes-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .note-item {
+            background-color: white;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .note-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .note-content {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .add-note-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .add-note-btn:hover {
+            background-color: #45a049;
+        }
+
+        #add-note-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        #note-form input, #note-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #note-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .note-chip {
+            display: inline-block;
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .note-chip:hover {
+            background-color: #d0d0d0;
+        }
+
+        #existing-notes-select {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+
+        #link-notes {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #link-notes:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <%- include('partials/richTextEditor') %>
+</head>
+<body>
+    <div class="container mt-4">
+        <a href="/jobs" class="back-icon"><i class="fas fa-arrow-left"></i></a>
+        <h1><%= job.companyName %></h1>
+        <p>Status: <%= job.status %></p>
+        <p>Date Applied: <%= job.dateApplied.toLocaleDateString() %></p>
+        <p>Experience Required: <%= job.experienceRequired %> years</p>
+        
+        <h2>Job Description</h2>
+        <p><%= job.jobDescription %></p>
+        
+        <h2>Technologies</h2>
+        <ul>
+            <% job.technologies.forEach(tech => { %>
+                <li><%= tech %></li>
+            <% }) %>
+        </ul>
+        
+        <h2>Comments</h2>
+        <% job.comments.forEach(comment => { %>
+            <div class="comment">
+                <p><%= comment.content %></p>
+                <small><%= comment.createdAt.toLocaleString() %></small>
+            </div>
+        <% }) %>
+
+        <h3>Add a Comment</h3>
+        <form action="/jobs/<%= job._id %>/comments" method="POST" class="comment-form">
+            <textarea name="content" rows="4" required></textarea>
+            <button type="submit">Add Comment</button>
+        </form>
+    </div>
+
+    <div id="add-note-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add Existing Notes</h2>
+            <select id="existing-notes-select" multiple>
+                <!-- This will be populated with JavaScript -->
+            </select>
+            <button id="link-notes">Link Selected Notes</button>
+        </div>
+    </div>
+
+    <h2>Linked Notes</h2>
+    <div id="linked-notes">
+        <% if (job.notes && job.notes.length > 0) { %>
+            <% job.notes.forEach(note => { %>
+                <span class="note-chip" data-note-id="<%= note._id %>"><%= note.title %></span>
+            <% }) %>
+        <% } else { %>
+            <p>No notes linked to this job.</p>
+        <% } %>
+    </div>
+
+    <button id="open-note-modal" class="add-note-btn">Link Existing Notes</button>
+
+    <script>
+        const addNoteModal = document.getElementById('add-note-modal');
+        const openModalBtn = document.getElementById('open-note-modal');
+        const existingNotesSelect = document.getElementById('existing-notes-select');
+        const linkNotesBtn = document.getElementById('link-notes');
+
+        openModalBtn.onclick = function() {
+            fetchExistingNotes();
+            addNoteModal.style.display = "block";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == addNoteModal) {
+                addNoteModal.style.display = "none";
+            }
+        }
+
+        function fetchExistingNotes() {
+            fetch('/notes/user', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include' // This ensures cookies are sent with the request
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(notes => {
+                if (Array.isArray(notes)) {
+                    existingNotesSelect.innerHTML = notes.map(note => 
+                        `<option value="${note._id}">${note.title}</option>`
+                    ).join('');
+                } else {
+                    console.error('Received notes is not an array:', notes);
+                    existingNotesSelect.innerHTML = '<option>No notes available</option>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                existingNotesSelect.innerHTML = '<option>Error fetching notes</option>';
+            });
+        }
+
+        linkNotesBtn.onclick = function() {
+            const selectedNotes = Array.from(existingNotesSelect.selectedOptions).map(option => option.value);
+            fetch('/test-link-notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ noteIds: selectedNotes }),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function updateLinkedNotes(notes) {
+            const linkedNotesContainer = document.getElementById('linked-notes');
+            if (notes && notes.length > 0) {
+                linkedNotesContainer.innerHTML = notes.map(note => 
+                    `<span class="note-chip" data-note-id="${note._id}">${note.title}</span>`
+                ).join('');
+            } else {
+                linkedNotesContainer.innerHTML = '<p>No notes linked to this job.</p>';
+            }
+            
+            // Add click event listeners to the newly created note chips
+            linkedNotesContainer.querySelectorAll('.note-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const noteId = this.getAttribute('data-note-id');
+                    window.location.href = `/notes/${noteId}`;
+                });
+            });
+        }
+
+        // Initial setup of click listeners for existing note chips
+        document.querySelectorAll('#linked-notes .note-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                const noteId = this.getAttribute('data-note-id');
+                window.location.href = `/notes/${noteId}`;
+            });
+        });
+
+        // Remove the existing event listener on the linked-notes container
+        // document.getElementById('linked-notes').removeEventListener('click', ...);
+
+        document.getElementById('linked-notes').addEventListener('click', function(e) {
+            if (e.target.classList.contains('note-chip')) {
+                const noteId = e.target.getAttribute('data-note-id');
+                window.location.href = `/notes/${noteId}`;
+            }
+        });
+    </script>
+</body>
+</html>

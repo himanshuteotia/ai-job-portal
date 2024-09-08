@@ -1,0 +1,69 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #1a73e8;
+    color: white;
+}
+
+.btn-success {
+    background-color: #34a853;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #ea4335;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Add any other global styles here */
+
+#note-type-filter {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border: 1px solid #e1e1e0;
+    border-radius: 3px;
+    font-size: 14px;
+    background-color: white;
+}
+
+.note-item[data-type="ai"] {
+    border-left: 3px solid #34a853;
+}
+
+.note-item[data-type="manual"] {
+    border-left: 3px solid #4285f4;
+}

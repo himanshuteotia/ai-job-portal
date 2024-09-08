@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Analytics</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .side-panel {
+            width: 250px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .nav-link {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-link:hover {
+            background-color: #45a049;
+        }
+        .nav-section {
+            margin-top: 50px; /* Increased space after back icon */
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .date-filter form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .date-filter .form-group {
+            display: flex;
+            flex-direction: column;
+            margin: 0; /* Remove margin */
+        }
+        .date-filter label {
+            margin-bottom: 5px;
+        }
+        .date-filter input[type="date"] {
+            width: 100%; /* Full width */
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .date-filter button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .date-filter button:hover {
+            background-color: #45a049;
+        }
+        .chart-container {
+            margin-bottom: 30px;
+        }
+        .back-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #4CAF50;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .scroll-icons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .scroll-icon {
+            font-size: 24px;
+            color: #4CAF50;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-icon" title="Back to Job Listings">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="scroll-icons">
+        <i class="fas fa-chevron-up scroll-icon" id="scrollTop" title="Scroll to Top"></i>
+        <i class="fas fa-chevron-down scroll-icon" id="scrollBottom" title="Scroll to Bottom"></i>
+    </div>
+
+    <div class="side-panel">
+        <div class="nav-section">
+            <h2>Quick Navigation</h2>
+            <a href="#jobCountChart" class="nav-link">Jobs Applied Over Time</a>
+            <a href="#techCountChart" class="nav-link">Top Technologies</a>
+            <a href="#experienceCountChart" class="nav-link">Experience Required</a>
+            <a href="#techJobCountChart" class="nav-link">Jobs by Technology</a>
+            <a href="/" class="nav-link">Back to Job Listings</a>
+        </div>
+
+        <div class="nav-section">
+            <h2>Date Filter</h2>
+            <div class="date-filter">
+                <form id="dateFilterForm">
+                    <div class="form-group">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" id="startDate" name="startDate" value="<%= startDate %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" id="endDate" name="endDate" value="<%= endDate %>">
+                    </div>
+                    
+                    <button type="submit">Apply Filter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Job Application Analytics</h1>
+
+        <div id="jobCountChart" class="chart-container">
+            <canvas></canvas>
+        </div>
+        
+        <div id="techCountChart" class="chart-container">
+            <canvas></canvas>
+        </div>
+
+        <div id="experienceCountChart" class="chart-container">
+            <canvas></canvas>
+        </div>
+
+        <div id="techJobCountChart" class="chart-container">
+            <canvas></canvas>
+        </div>
+    </div>
+
+    <script>
+        const jobCounts = JSON.parse('<%- JSON.stringify(jobCounts) %>');
+        const techCounts = JSON.parse('<%- JSON.stringify(techCounts) %>');
+        const experienceCounts = JSON.parse('<%- JSON.stringify(experienceCounts) %>');
+        const techJobCounts = JSON.parse('<%- JSON.stringify(techJobCounts) %>');
+
+        function createChart(elementId, type, data, options) {
+            new Chart(document.querySelector(`#${elementId} canvas`), {
+                type: type,
+                data: data,
+                options: options
+            });
+        }
+
+        createChart('jobCountChart', 'line', {
+            labels: Object.keys(jobCounts),
+            datasets: [{
+                label: 'Jobs Applied',
+                data: Object.values(jobCounts),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        }, {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Jobs Applied Over Time'
+                }
+            }
+        });
+
+        createChart('techCountChart', 'bar', {
+            labels: Object.keys(techCounts),
+            datasets: [{
+                label: 'Technology Count',
+                data: Object.values(techCounts),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            }]
+        }, {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Top Technologies in Job Applications'
+                }
+            }
+        });
+
+        createChart('experienceCountChart', 'bar', {
+            labels: Object.keys(experienceCounts),
+            datasets: [{
+                label: 'Jobs Count by Experience Required',
+                data: Object.values(experienceCounts),
+                backgroundColor: 'rgba(153, 102, 255, 0.6)'
+            }]
+        }, {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Jobs Applied by Experience Required'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Years of Experience'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of Jobs'
+                    },
+                    beginAtZero: true
+                }
+            }
+        });
+
+        createChart('techJobCountChart', 'bar', {
+            labels: Object.keys(techJobCounts),
+            datasets: [{
+                label: 'Jobs Applied by Technology',
+                data: Object.values(techJobCounts),
+                backgroundColor: 'rgba(255, 159, 64, 0.6)'
+            }]
+        }, {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Jobs Applied by Technology'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Technology'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of Jobs'
+                    },
+                    beginAtZero: true
+                }
+            }
+        });
+
+        document.getElementById('dateFilterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            window.location.href = `/analytics?startDate=${startDate}&endDate=${endDate}`;
+        });
+
+        // Set default dates in the form
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            
+            if (!startDateInput.value) {
+                const currentMonthStart = new Date();
+                currentMonthStart.setDate(1);
+                startDateInput.value = currentMonthStart.toISOString().split('T')[0];
+            }
+            
+            if (!endDateInput.value) {
+                const currentMonthEnd = new Date();
+                currentMonthEnd.setMonth(currentMonthEnd.getMonth() + 1);
+                currentMonthEnd.setDate(0);
+                endDateInput.value = currentMonthEnd.toISOString().split('T')[0];
+            }
+        });
+
+        // Scroll functionality
+        document.getElementById('scrollTop').addEventListener('click', function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+
+        document.getElementById('scrollBottom').addEventListener('click', function() {
+            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+        });
+    </script>
+</body>
+</html>
