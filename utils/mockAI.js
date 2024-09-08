@@ -1,17 +1,18 @@
 exports.mockAITechnologyExtraction = (jobDescription) => {
-  const techStack = [
-    "Node.js",
-    "React",
-    "MongoDB",
-    "Express.js",
+  // This is a mock function. In a real scenario, you'd use AI to extract technologies.
+  const commonTechnologies = [
+    "JavaScript",
     "Python",
     "Java",
-    "AWS",
+    "C++",
+    "React",
+    "Node.js",
+    "SQL",
   ];
-  return techStack.filter(() => Math.random() > 0.5);
+  return commonTechnologies.filter(() => Math.random() > 0.5);
 };
 
 exports.mockAIExperienceExtraction = (jobDescription) => {
-  const experiences = [1, 2, 3, 4, 5];
-  return experiences[Math.floor(Math.random() * experiences.length)];
+  // This is a mock function. In a real scenario, you'd use AI to extract experience required.
+  return Math.floor(Math.random() * 10) + 1; // Returns a random number between 1 and 10
 };

@@ -1,5 +1,9 @@
 const Job = require("../models/Job");
 const Note = require("../models/Note");
+const {
+  mockAITechnologyExtraction,
+  mockAIExperienceExtraction,
+} = require("../utils/mockAI");
 
 exports.getJobs = async (req, res) => {
   try {
@@ -38,8 +42,13 @@ exports.addJob = async (req, res) => {
   try {
     const { companyName, dateApplied, jobDescription } = req.body;
 
-    const technologies = mockAITechnologyExtraction(jobDescription);
-    const experienceRequired = mockAIExperienceExtraction(jobDescription);
+    // If you want to use AI extraction, uncomment these lines
+    // const technologies = mockAITechnologyExtraction(jobDescription);
+    // const experienceRequired = mockAIExperienceExtraction(jobDescription);
+
+    // For now, let's use default values
+    const technologies = [];
+    const experienceRequired = 0;
 
     const newJob = new Job({
       user: req.user._id,
@@ -53,7 +62,8 @@ exports.addJob = async (req, res) => {
     await newJob.save();
     res.redirect("/");
   } catch (error) {
-    res.status(500).render("error", { message: "Error adding job" });
+    console.error("Error adding job:", error);
+    res.status(500).render("error", { message: "Error adding job", error });
   }
 };
 

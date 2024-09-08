@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('./partials/head') %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <%- include('./partials/nav') %>
     <div class="container">
         <h1>Error</h1>
         <p><%= message %></p>
-        <% if (error.stack) { %>
+        <% if (typeof error !== 'undefined' && error.stack) { %>
             <pre><%= error.stack %></pre>
         <% } %>
     </div>
-    <%- include('./partials/footer') %>
 </body>
 </html>
