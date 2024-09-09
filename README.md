@@ -13,7 +13,7 @@ Ye project ek simple job application tracker hai jo aapko apne job applications 
 
 1. Repository ko clone karein:
    ```
-   git clone https://github.com/yourusername/job-application-tracker.git
+   git clone https://github.com/himanshuteotia/job-application-tracker.git
    ```
 2. Dependencies install karein:
    ```
