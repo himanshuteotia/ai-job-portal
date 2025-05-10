@@ -1,7 +1,5 @@
 # Job Application Tracker
 
-Ye project ek simple job application tracker hai jo aapko apne job applications ko manage karne mein madad karta hai.
-
 ## Features
 
 - User authentication (login/signup)
