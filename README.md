@@ -3,41 +3,41 @@
 ## Features
 
 - User authentication (login/signup)
-- Job applications ko add, view, edit aur delete karna
-- Notes add karna har job application ke liye
+- Add, view, edit and delete job applications
+- Add notes for each job application
 - Responsive design
 
 ## Installation
 
-1. Repository ko clone karein:
+1. Clone the repository:
    ```
    git clone https://github.com/himanshuteotia/job-application-tracker.git
    ```
-2. Dependencies install karein:
+2. Install dependencies:
    ```
    npm install
    ```
-3. Environment variables set karein:
+3. Set environment variables:
    ```
    cp .env.example .env
    ```
-   Phir .env file mein apne database credentials aur session secret add karein.
+   Then add your database credentials and session secret to the .env file.
 
-4. Database migrations run karein:
+4. Run database migrations:
    ```
    npm run migrate
    ```
-5. Server start karein:
+5. Start the server:
    ```
    npm start
    ```
 
 ## Usage
 
-1. Browser mein `http://localhost:3000` pe jaayein
-2. Sign up ya login karein
-3. Dashboard pe job applications add, view, edit ya delete karein
-4. Har job ke liye notes add karein
+1. Go to `http://localhost:3000` in your browser
+2. Sign up or login
+3. Add, view, edit or delete job applications on the dashboard
+4. Add notes for each job application
 
 ## Folder Structure
 
@@ -47,11 +47,11 @@
 - `routes/`: Express routes
 - `docs/`: Feature-specific documentation
 
-Zyada details ke liye, `docs/` folder mein har feature ki alag README file check karein.
+For more details, check the README files for each feature in the `docs/` folder.
 
 ## Contributing
 
-Contributions ka swagat hai! Kripya pehle ek issue create karein ya existing issue pe comment karein before starting work on a PR.
+Contributions are welcome! Please create an issue or comment on an existing issue before starting work on a PR.
 
 ## License
 
@@ -92,3 +92,22 @@ INSIGHTS_CRON_SCHEDULE=0 2 * * *
 
 ### Extending Insights
 - You can add more analytics, suggestions, or custom logic by editing the helpers in `utils/insightHelpers.js` and the cron job script.
+
+Images :
+
+![Home](images/image-6.png)
+
+![Add new job](images/image-7.png)
+
+![Analytics](images/image-8.png)
+
+![Job insights](images/image-3.png)
+
+![Select job and send email](images/image-4.png)
+
+![Adding notes](images/image-9.png)
+
+![Job details](images/image-10.png)
+
+![Manage Skills](images/image-11.png)
+
