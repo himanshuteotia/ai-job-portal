@@ -6,6 +6,7 @@
     <title>Add New Job</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,49 +15,51 @@
             background-color: #e8f5e9; /* Light green background */
         }
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 600px;
+            margin: 32px auto 0 auto;
+            padding: 20px 0 20px 0; /* Remove right padding */
         }
         .form-header {
             background-color: #4caf50; /* Green header */
             color: white;
             border-radius: 8px;
-            padding: 20px;
+            padding: 20px 32px;
             margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
         }
         .form-section {
             background-color: #fff;
             border-radius: 8px;
-            padding: 20px;
+            padding: 28px 32px 24px 32px;
             margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border: 1px solid #81c784; /* Light green border */
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 7px;
             font-weight: bold;
             color: #2e7d32; /* Dark green color for labels */
         }
         input[type="text"],
         input[type="date"],
+        input[type="email"],
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 10px 12px;
             border: 1px solid #81c784; /* Light green border */
             border-radius: 4px;
             font-size: 16px;
         }
         textarea {
-            height: 150px;
+            height: 120px;
         }
         .btn {
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -77,11 +80,84 @@
         .btn-secondary:hover {
             background-color: #66bb6a; /* Slightly darker green on hover */
         }
+        .choices {
+            width: 100% !important;
+            min-width: 0;
+            max-width: 100%;
+        }
+        .choices__inner {
+            width: 100% !important;
+            min-width: 0;
+            max-width: 100%;
+        }
+        .choices__list--multiple .choices__item { background: #e0e0e0; color: #333; border-radius: 16px; padding: 6px 14px; font-size: 0.98em; margin-right: 8px; margin-bottom: 4px; font-weight: 500; }
+        .form-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        .form-group.skills-group {
+            margin-bottom: 22px;
+        }
+        .skills-label {
+            font-size: 1.2em;
+            color: #2e7d32;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        .skills-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        #skills {
+            min-width: 180px;
+            width: auto;
+            max-width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 2px solid #81c784;
+            font-size: 16px;
+            background: #f7fff7;
+            box-shadow: 0 2px 8px rgba(76,175,80,0.07);
+            transition: border-color 0.2s;
+            flex: 1 1 auto;
+        }
+        #skills:focus {
+            border-color: #388e3c;
+            outline: none;
+        }
+        #add-skill-btn {
+            padding: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #81c784;
+            color: #fff;
+            font-size: 2em;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(76,175,80,0.13);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        #add-skill-btn:hover {
+            background: #388e3c;
+            box-shadow: 0 4px 16px rgba(56,142,60,0.18);
+        }
+        #add-skill-input-group input {
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1.5px solid #81c784;
+            font-size: 16px;
+            width: 70%;
+            background: #f7fff7;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="/jobs" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Jobs</a>
+        <!-- <a href="/jobs" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Jobs</a> -->
         
         <div class="form-header">
             <h1><i class="fas fa-plus-circle"></i> Add New Job</h1>
@@ -90,8 +166,24 @@
         <form action="/jobs/add" method="POST">
             <div class="form-section">
                 <div class="form-group">
+                    <label for="jobTitle"><i class="fas fa-briefcase"></i> Job Title:</label>
+                    <input type="text" id="jobTitle" name="jobTitle" required>
+                </div>
+                <div class="form-group">
                     <label for="companyName"><i class="fas fa-building"></i> Company Name:</label>
                     <input type="text" id="companyName" name="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label for="recruiterName"><i class="fas fa-user-tie"></i> Recruiter Name (optional):</label>
+                    <input type="text" id="recruiterName" name="recruiterName">
+                </div>
+                <div class="form-group">
+                    <label for="recruiterEmail"><i class="fas fa-envelope"></i> Recruiter Email (optional):</label>
+                    <input type="email" id="recruiterEmail" name="recruiterEmail">
+                </div>
+                <div class="form-group">
+                    <label for="additionalJobDescription"><i class="fas fa-info-circle"></i> Additional Job Description (optional):</label>
+                    <textarea id="additionalJobDescription" name="additionalJobDescription" placeholder="Any extra details for this job..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="dateApplied"><i class="fas fa-calendar-alt"></i> Date Applied:</label>
@@ -101,9 +193,94 @@
                     <label for="jobDescription"><i class="fas fa-file-alt"></i> Job Description:</label>
                     <textarea id="jobDescription" name="jobDescription" required></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="salary"><i class="fas fa-money-bill-wave"></i> Salary (optional):</label>
+                    <input type="text" id="salary" name="salary" placeholder="e.g. 10-15 LPA or $100k-$120k">
+                </div>
+                <div class="form-group">
+                    <label for="source"><i class="fas fa-link"></i> Source of Job (optional):</label>
+                    <input type="text" id="source" name="source" placeholder="e.g. LinkedIn, Referral, Company Website">
+                </div>
+                <div class="form-group">
+                    <label for="location"><i class="fas fa-map-marker-alt"></i> Location (optional):</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Remote, Bangalore, USA">
+                </div>
+                <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+                    <input type="checkbox" id="highProbability" name="highProbability" style="width:18px;height:18px;">
+                    <label for="highProbability" style="margin-bottom:0;">High Probability Job</label>
+                </div>
             </div>
+            <%- include('partials/skillsSelect', { selectedSkills: [], allSkills: allSkills }) %>
             <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Job</button>
         </form>
     </div>
+    <script type="application/json" id="allSkillsJson"><%= JSON.stringify(allSkills) %></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+    const skillsSelect = document.getElementById('skills');
+    const addSkillBtn = document.getElementById('add-skill-btn');
+    const addSkillInputGroup = document.getElementById('add-skill-input-group');
+    const newSkillInput = document.getElementById('new-skill-input');
+    const saveSkillBtn = document.getElementById('save-skill-btn');
+    const cancelSkillBtn = document.getElementById('cancel-skill-btn');
+    let choices;
+    let lastSelectedSkills = [];
+
+    async function fetchAndPopulateSkills(selectedSkills = []) {
+        const res = await fetch('/skills');
+        const skills = await res.json();
+        skillsSelect.innerHTML = skills.map(skill => `<option value="${skill.name}">${skill.name}</option>`).join('');
+        if (choices) choices.destroy();
+        choices = new Choices(skillsSelect, {
+            removeItemButton: true,
+            searchResultLimit: 10,
+            searchPlaceholderValue: 'Search skills...',
+            placeholder: true,
+            placeholderValue: 'Select skills',
+            duplicateItemsAllowed: false,
+            shouldSort: false
+        });
+        // Set selected skills if any
+        if (selectedSkills.length) {
+            choices.setChoiceByValue(selectedSkills);
+            lastSelectedSkills = selectedSkills;
+        } else if (lastSelectedSkills.length) {
+            choices.setChoiceByValue(lastSelectedSkills);
+        }
+    }
+
+    fetchAndPopulateSkills();
+
+    addSkillBtn.onclick = function() {
+        addSkillInputGroup.style.display = 'flex';
+        newSkillInput.value = '';
+        newSkillInput.focus();
+    };
+    cancelSkillBtn.onclick = function() {
+        addSkillInputGroup.style.display = 'none';
+        newSkillInput.value = '';
+    };
+    saveSkillBtn.onclick = async function() {
+        let skill = newSkillInput.value.trim();
+        if (!skill) return;
+        skill = skill.toLowerCase();
+        // Save currently selected skills
+        const selected = Array.from(skillsSelect.selectedOptions).map(opt => opt.value);
+        // Add to backend
+        const res = await fetch('/skills', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: skill })
+        });
+        if (res.ok) {
+            addSkillInputGroup.style.display = 'none';
+            newSkillInput.value = '';
+            // Re-fetch skills and preserve all selected (including new)
+            await fetchAndPopulateSkills([...selected, skill]);
+        } else {
+            alert('Failed to add skill.');
+        }
+    };
+    </script>
 </body>
 </html>

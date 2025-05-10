@@ -104,9 +104,11 @@ function getJobCounts(jobs) {
 function getTechCounts(jobs) {
   const counts = {};
   jobs.forEach((job) => {
-    job.technologies.forEach((tech) => {
-      counts[tech] = (counts[tech] || 0) + 1;
-    });
+    if (job.skills && Array.isArray(job.skills)) {
+      job.skills.forEach((tech) => {
+        counts[tech] = (counts[tech] || 0) + 1;
+      });
+    }
   });
   return counts;
 }
@@ -123,9 +125,11 @@ function getExperienceCounts(jobs) {
 function getTechJobCounts(jobs) {
   const counts = {};
   jobs.forEach((job) => {
-    job.technologies.forEach((tech) => {
-      counts[tech] = (counts[tech] || 0) + 1;
-    });
+    if (job.skills && Array.isArray(job.skills)) {
+      job.skills.forEach((tech) => {
+        counts[tech] = (counts[tech] || 0) + 1;
+      });
+    }
   });
   return counts;
 }

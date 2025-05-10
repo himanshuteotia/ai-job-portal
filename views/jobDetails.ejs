@@ -3,499 +3,596 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= job.companyName %> - Job Details</title>
+    <title><%= title %></title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/jobDetails.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.8/purify.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #e8f5e9; /* Light green background */
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .job-header {
-            background-color: #4caf50; /* Green header */
-            color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .job-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .main-content, .right-panel {
-            flex: 1;
-            min-width: 300px;
-        }
-        .job-section {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border: 1px solid #81c784; /* Light green border */
-        }
-        .tech-tag {
-            display: inline-block;
-            background-color: #c8e6c9; /* Light green background */
-            color: #2e7d32; /* Dark green text */
-            padding: 5px 10px;
-            border-radius: 20px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
-        }
-        .btn-primary {
-            background-color: #4caf50; /* Green primary button */
-            color: #fff;
-        }
-        .btn-primary:hover {
-            background-color: #45a049; /* Darker green on hover */
-        }
-        .btn-secondary {
-            background-color: #81c784; /* Light green secondary button */
-            color: #fff;
-        }
-        .btn-secondary:hover {
-            background-color: #66bb6a; /* Slightly darker green on hover */
-        }
-        .btn-danger {
-            background-color: #e57373; /* Light red button */
-            color: #fff;
-        }
-        .btn-danger:hover {
-            background-color: #ef5350; /* Slightly darker red on hover */
-        }
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-        .applied { background-color: #fff176; color: #000; } /* Yellow */
-        .interviewing { background-color: #4fc3f7; color: #000; } /* Light Blue */
-        .offered { background-color: #81c784; color: #000; } /* Light Green */
-        .rejected { background-color: #e57373; color: #fff; } /* Light Red */
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        
-        .note-chip {
-            display: inline-block;
-            padding: 5px 10px;
-            margin: 5px;
-            background-color: #c8e6c9; /* Light green background */
-            color: #2e7d32; /* Dark green text */
-            border-radius: 20px;
-            font-size: 0.9em;
-            position: relative;
-            padding-right: 30px;
-            max-width: none; /* Remove max-width */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .unlink-note {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-weight: bold;
-            color: #888;
-            font-size: 1.2em;
-            line-height: 1;
-            width: 20px;
-            height: 20px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background-color: rgba(0,0,0,0.1);
-            transition: all 0.2s ease;
-        }
-        
-        .unlink-note:hover {
-            color: #fff;
-            background-color: #ef5350; /* Slightly darker red on hover */
-        }
-        
-        .full-width-section {
-            flex-basis: 100%;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 </head>
 <body>
-    <div class="container">
-        <a href="/jobs" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Jobs</a>
+    <div class="container mt-4">
+        <a href="/" class="btn btn-secondary" style="margin-bottom: 16px;">&larr; Back</a>
+        <h1><%= job.companyName %></h1>
+        <div class="job-meta">
+            <% if (job.jobTitle) { %>
+              <p><strong>Job Title:</strong> <%= job.jobTitle %></p>
+            <% } %>
+            <% if (job.recruiterEmail) { %>
+              <p><strong>Recruiter Email:</strong> <%= job.recruiterEmail %></p>
+            <% } %>
+            <% if (job.recruiterName) { %>
+              <p><strong>Recruiter Name:</strong> <%= job.recruiterName %></p>
+            <% } %>
+            <% if (job.salary) { %>
+              <p><strong>Salary:</strong> <%= job.salary %></p>
+            <% } %>
+            <% if (job.source) { %>
+              <p><strong>Source:</strong> <%= job.source %></p>
+            <% } %>
+            <% if (job.location) { %>
+              <p><strong>Location:</strong> <%= job.location %></p>
+            <% } %>
+            <% if (job.highProbability) { %>
+              <p><strong>High Probability:</strong> <span style="color:#388e3c;font-weight:bold;">Yes</span></p>
+            <% } %>
+            <% if (job.additionalJobDescription) { %>
+              <p><strong>Additional Job Details:</strong> <%= job.additionalJobDescription %></p>
+            <% } %>
+            <p><strong>Applied on:</strong> <%= job.dateApplied.toLocaleDateString() %></p>
+            <p><strong>Status:</strong> <%= job.status %></p>
+        </div>
         
-        <div class="job-header">
-            <h1><%= job.companyName %></h1>
-            <div class="job-meta">
-                <span class="job-meta-item"><i class="fas fa-calendar-alt"></i> Applied: <%= job.dateApplied.toLocaleDateString() %></span>
-                <span class="job-meta-item"><i class="fas fa-briefcase"></i> Experience: <%= job.experienceRequired %> years</span>
-                <span class="job-meta-item"><i class="fas fa-tasks"></i> Status: <span class="status-badge <%= job.status.toLowerCase() %>"><%= job.status %></span></span>
+        <!-- Job Skills Chips UI -->
+        <div class="job-skills-chips" style="margin-bottom: 18px;">
+          <div class="skills-chips-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <% (job.skills || []).forEach(skill => { %>
+              <span class="chip-skill" style="display:flex;align-items:center;gap:6px;">
+                <span class="chip-skill-name"><%= skill %></span>
+                <button class="delete-skill-btn" data-skill="<%= skill %>" title="Remove" style="background:none;border:none;color:#e53935;font-size:1.1em;cursor:pointer;padding:0 4px 0 2px;">
+                  <i class="fas fa-times"></i>
+                </button>
+              </span>
+            <% }) %>
+            <% if (!(job.skills && job.skills.length)) { %>
+              <span style="color:#aaa;font-size:0.98em;">No skills</span>
+            <% } %>
+          </div>
+          <span id="skills-update-status" style="margin-left:8px;font-size:1em;"></span>
+        </div>
+        
+        <div class="job-description mt-4">
+            <h2>Job Description</h2>
+            <div style="white-space:pre-line;font-size:1.08em;line-height:1.7;"> <%= job.jobDescription %> </div>
+        </div>
+        
+        <div class="job-actions mt-4">
+            <button id="link-notes-btn" class="btn btn-secondary">Link Notes</button>
+        </div>
+        
+        <div class="linked-notes mt-4">
+            <h2>Linked Notes</h2>
+            <div id="linked-notes-list" class="accordion">
+                <!-- Linked notes will be dynamically added here -->
             </div>
         </div>
         
-        <div class="job-content">
-            <!-- Full-width job description section -->
-            <div class="job-section full-width-section">
-                <h2>Job Description</h2>
-                <p><%= job.jobDescription %></p>
+        <div class="comments mt-4">
+            <h2>Comments</h2>
+            <div id="comments-list">
+                <% if (comments && comments.length > 0) { %>
+                    <ul class="comments-list">
+                        <% comments.forEach(comment => { %>
+                            <li class="comment-item">
+                                <div class="comment-bubble">
+                                    <div class="comment-avatar"><i class="fas fa-user-circle"></i></div>
+                                    <div class="comment-content">
+                                        <div class="comment-text"><%= comment.content %></div>
+                                        <div class="comment-meta"><span><%= new Date(comment.createdAt).toLocaleString() %></span></div>
+                                    </div>
+                                </div>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No comments yet.</p>
+                <% } %>
             </div>
-            
-            <div class="main-content">
-                <div class="job-section">
-                    <h2>Technologies</h2>
-                    <% job.technologies.forEach(tech => { %>
-                        <span class="tech-tag"><%= tech %></span>
-                    <% }) %>
-                </div>
-                
-                <div class="job-section">
-                    <h2>Comments</h2>
-                    <% job.comments.forEach(comment => { %>
-                        <div class="comment-item">
-                            <p><%= comment.content %></p>
-                            <small><%= comment.createdAt.toLocaleString() %></small>
-                        </div>
-                    <% }) %>
-                    
-                    <h3>Add a Comment</h3>
-                    <form id="comment-form">
-                        <textarea name="content" rows="4" required style="width: 100%; padding: 10px;"></textarea>
-                        <button type="submit" class="btn btn-primary">Add Comment</button>
-                    </form>
-                </div>
-            </div>
-            
-            <div class="right-panel">
-                <div class="job-section">
-                    <h2>Actions</h2>
-                    <a href="/jobs/<%= job._id %>/edit" class="btn btn-primary">Edit Job</a>
-                    <button id="delete-job-btn" class="btn btn-danger">Delete Job</button>
-                </div>
-
-                <div class="job-section">
-                    <h2>Linked Notes</h2>
-                    <div id="linked-notes-chips"></div>
-                    <button id="link-notes-btn" class="btn btn-secondary">Link Notes</button>
-                </div>
-            </div>
+            <form id="comment-form" class="mt-3 comment-form-inline">
+                <textarea class="form-control" name="content" rows="3" required placeholder="Add a comment..."></textarea>
+                <button type="submit" class="btn btn-primary ml-2">Add Comment</button>
+            </form>
+        </div>
+        <div class="delete-job-bottom" style="margin-top:40px;text-align:center;">
+            <button id="delete-job-btn" class="btn btn-danger" style="width:220px;">Delete Job</button>
         </div>
     </div>
 
-    <!-- Replace the noteContentModal with this -->
-    <div id="noteContentModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="note-title">Note Content</h2>
-            <div id="note-content"></div>
-        </div>
-    </div>
-
-    <!-- Replace the existing linkNotesModal with this improved version -->
+    <!-- Link Notes Modal -->
     <div id="linkNotesModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Link Notes</h2>
-            <input type="text" id="noteSearchInput" placeholder="Search notes..." style="width: 100%; padding: 10px; margin-bottom: 10px;">
-            <select id="availableNotes" multiple style="width: 100%; height: 200px;">
-                <!-- Options will be dynamically added here -->
-            </select>
-            <button id="submitLinkedNotes" class="btn btn-primary" style="margin-top: 10px;">Link Selected Notes</button>
+      <div class="modal-content">
+        <span class="close" id="closeLinkNotesModal">&times;</span>
+        <h3>Link Notes to Job</h3>
+        <div id="available-notes-list" style="margin-bottom:18px;"></div>
+        <div class="link-notes-actions">
+          <button id="link-selected-notes-btn" class="btn btn-primary"><i class="fas fa-link"></i> Link Selected Notes</button>
+          <a href="/notes" id="openAddNoteModal" class="btn btn-secondary"><i class="fas fa-plus"></i> Add New Note</a>
         </div>
+      </div>
     </div>
+
+    <style>
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+    .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; }
+    .close { position: absolute; right: 16px; top: 8px; font-size: 28px; font-weight: bold; color: #888; cursor: pointer; }
+    .comment-form-inline {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .comment-form-inline textarea.form-control {
+      flex: 1;
+      resize: vertical;
+      min-height: 60px;
+      max-height: 160px;
+      margin-bottom: 0;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 1.1em;
+      background: #f8f9fa;
+      border: 1.5px solid #e0e0e0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .comments-list {
+      margin-bottom: 0;
+      padding: 0;
+    }
+    .comment-item {
+      list-style: none;
+      margin-bottom: 18px;
+    }
+    .comment-bubble {
+      display: flex;
+      align-items: flex-start;
+      background: #f4f8fb;
+      border-radius: 16px;
+      padding: 12px 18px;
+      box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+      position: relative;
+    }
+    .comment-avatar {
+      font-size: 2em;
+      color: #2196F3;
+      margin-right: 14px;
+    }
+    .comment-content {
+      flex: 1;
+    }
+    .comment-text {
+      font-size: 1.08em;
+      color: #222;
+      margin-bottom: 4px;
+    }
+    .comment-meta {
+      font-size: 0.85em;
+      color: #888;
+    }
+    /* Accordion for linked notes */
+    .accordion {
+      border-radius: 8px;
+      background: #f8f9fa;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      padding: 0;
+    }
+    .accordion-item {
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .accordion-header {
+      cursor: pointer;
+      padding: 12px 18px;
+      background: #e9ecef;
+      font-weight: bold;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .accordion-content {
+      display: none;
+      padding: 12px 18px;
+      background: #fff;
+      border-radius: 0 0 8px 8px;
+    }
+    .accordion-header.active + .accordion-content {
+      display: block;
+    }
+    .link-notes-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .link-notes-actions .btn {
+      flex: 1;
+      height: 40px;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .skills-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .chip-skill {
+      display: flex;
+      align-items: center;
+      background: #e0e0e0;
+      color: #333;
+      border-radius: 16px;
+      padding: 6px 14px;
+      font-size: 0.98em;
+      margin-right: 0;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .delete-skill-btn {
+      background: none;
+      border: none;
+      color: #e53935;
+      font-size: 1.1em;
+      cursor: pointer;
+      padding: 0 4px 0 2px;
+      margin-left: 2px;
+      display: flex;
+      align-items: center;
+    }
+    .unlink-note-btn {
+      background: #fff;
+      color: #dc3545;
+      border: 1px solid #dc3545;
+      border-radius: 12px;
+      padding: 2px 10px;
+      font-size: 0.95em;
+      margin-left: 12px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .unlink-note-btn:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+    .skills-group {
+      margin-bottom: 22px;
+    }
+    .skills-label {
+      font-size: 1.2em;
+      color: #2e7d32;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    .skills-row {
+      display: flex;
+      gap: 0;
+      align-items: center;
+    }
+    .choices {
+      width: 100% !important;
+      min-width: 0;
+      max-width: 100%;
+      background: #f7f7f7;
+      border: 2px solid #d0d0d0;
+      color: #444;
+    }
+    .choices__inner {
+      width: 100% !important;
+      min-width: 0;
+      max-width: 100%;
+      background: #f7f7f7;
+      border: none;
+      color: #444;
+      min-height: 48px;
+      padding: 8px 8px 4px 8px;
+    }
+    .choices__list--multiple .choices__item--selectable {
+      background: #e0e0e0;
+      color: #333;
+      border-radius: 16px;
+      padding: 6px 14px;
+      font-size: 0.98em;
+      margin-right: 8px;
+      margin-bottom: 4px;
+      font-weight: 500;
+      border: none;
+      box-shadow: none;
+    }
+    .choices__list--multiple {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    </style>
 
     <script>
-        console.log('Job object:', <%- JSON.stringify(job) %>);
-        console.log('Related notes:', <%- JSON.stringify(job.relatedNotes || []) %>);
-
-        function renderLinkedNotesChips() {
-            fetch('/jobs/<%= job._id %>/related-notes')
-                .then(response => response.json())
-                .then(relatedNotes => {
-                    const chipsContainer = document.getElementById('linked-notes-chips');
-                    if (!chipsContainer) {
-                        console.error('Chips container not found');
-                        return;
-                    }
-                    chipsContainer.innerHTML = '';
-                    
-                    if (relatedNotes.length === 0) {
-                        chipsContainer.innerHTML = '<p>No linked notes yet.</p>';
-                        return;
-                    }
-
-                    relatedNotes.forEach(note => {
-                        const chip = document.createElement('span');
-                        chip.className = 'note-chip';
-                        chip.title = note.content; // Add full content as tooltip
-                        chip.innerHTML = `
-                            ${note.title || 'Untitled Note'}
-                            <span class="unlink-note" data-note-id="${note._id}">&times;</span>
-                        `;
-                        const unlinkButton = chip.querySelector('.unlink-note');
-                        if (unlinkButton) {
-                            unlinkButton.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                unlinkNote(note._id);
-                            });
-                        }
-                        chip.addEventListener('click', () => openNoteContent(note));
-                        chipsContainer.appendChild(chip);
-                    });
-                })
-                .catch(error => console.error('Error fetching related notes:', error));
-        }
-
-        // Call renderLinkedNotesChips when the page loads
-        document.addEventListener('DOMContentLoaded', renderLinkedNotesChips);
-
-        function openNoteContent(note) {
-            const modal = document.getElementById('noteContentModal');
-            const titleElement = document.getElementById('note-title');
-            const contentElement = document.getElementById('note-content');
-            
-            modal.style.display = 'block';
-            titleElement.textContent = note.title || 'Untitled Note';
-            
-            // Use DOMPurify to sanitize the HTML content
-            contentElement.innerHTML = DOMPurify.sanitize(note.content);
-        }
-
-        // Get the modals
-        var linkNotesModal = document.getElementById("linkNotesModal");
-        var noteContentModal = document.getElementById("noteContentModal");
-
-        // Get the button that opens the link notes modal
-        var linkNotesBtn = document.getElementById("link-notes-btn");
-
-        // Get the <span> elements that close the modals
-        var spans = document.getElementsByClassName("close");
-
-        // When the user clicks the button, open the link notes modal
-        linkNotesBtn.onclick = function() {
-            linkNotesModal.style.display = "block";
-            fetchAvailableNotes();
-        }
-
-        // When the user clicks on <span> (x), close the modals
-        for (let span of spans) {
-            span.onclick = function() {
-                linkNotesModal.style.display = "none";
-                noteContentModal.style.display = "none";
+    // Delete job
+    document.getElementById('delete-job-btn').addEventListener('click', async function() {
+        if(confirm('Are you sure you want to delete this job?')) {
+            const res = await fetch('/jobs/<%= job._id %>', { method: 'DELETE' });
+            if(res.ok) {
+                window.location.href = '/';
+            } else {
+                alert('Failed to delete job');
             }
         }
+    });
 
-        // When the user clicks anywhere outside of the modals, close them
-        window.onclick = function(event) {
-            if (event.target == linkNotesModal) {
-                linkNotesModal.style.display = "none";
-            }
-            if (event.target == noteContentModal) {
-                noteContentModal.style.display = "none";
-            }
+    // Fetch and render linked notes
+    async function fetchLinkedNotes() {
+        const res = await fetch(`/jobs/<%= job._id %>/related-notes`);
+        const notes = await res.json();
+        const list = document.getElementById('linked-notes-list');
+        if (!notes.length) {
+            list.innerHTML = '<p>No notes linked.</p>';
+            return;
         }
-
-        function fetchAvailableNotes() {
-            fetch('/jobs/<%= job._id %>/available-notes')
-                .then(response => response.json())
-                .then(notes => {
-                    const selectElement = document.getElementById('availableNotes');
-                    selectElement.innerHTML = '';
-                    notes.forEach(note => {
-                        const option = document.createElement('option');
-                        option.value = note._id;
-                        option.textContent = note.title || 'Untitled Note';
-                        selectElement.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching available notes:', error));
-        }
-
-        document.getElementById('noteSearchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const options = document.getElementById('availableNotes').options;
-            for (let i = 0; i < options.length; i++) {
-                const optionText = options[i].text.toLowerCase();
-                options[i].style.display = optionText.includes(searchTerm) ? '' : 'none';
+        list.innerHTML = notes.map((note, idx) => `
+          <div class='accordion-item'>
+            <div class='accordion-header' data-idx='${idx}'>
+              <span><b>${note.title}</b></span>
+              <span><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class='accordion-content'>
+              <div>${note.content}</div>
+              ${note.skills && note.skills.length ? `<div style='margin-top:8px;'><b>Skills:</b> ${note.skills.map(s => s.name || s).join(', ')}</div>` : ''}
+              <button class="unlink-note-btn" data-note-id="${note._id}">Unlink</button>
+            </div>
+          </div>
+        `).join('');
+        // Accordion toggle logic
+        Array.from(list.querySelectorAll('.accordion-header')).forEach(header => {
+          header.onclick = function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block') {
+              content.style.display = 'none';
+            } else {
+              content.style.display = 'block';
             }
+          }
         });
-
-        document.getElementById('submitLinkedNotes').addEventListener('click', function() {
-            const selectedNotes = Array.from(document.getElementById('availableNotes').selectedOptions).map(option => option.value);
-            
-            fetch('/jobs/link-notes', {
+        // Unlink note logic
+        Array.from(list.querySelectorAll('.unlink-note-btn')).forEach(btn => {
+          btn.onclick = async function(e) {
+            e.stopPropagation();
+            const noteId = this.getAttribute('data-note-id');
+            if(confirm('Are you sure you want to unlink this note?')) {
+              const res = await fetch(`/jobs/<%= job._id %>/unlink-note`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ jobId: '<%= job._id %>', noteIds: selectedNotes }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    linkNotesModal.style.display = "none";
-                    renderLinkedNotesChips();
-                } else {
-                    throw new Error(data.message || 'Error linking notes');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error linking notes: ' + error.message);
-            });
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ noteId })
+              });
+              if(res.ok) {
+                fetchLinkedNotes();
+                alert('Note unlinked!');
+              } else {
+                alert('Failed to unlink note');
+              }
+            }
+          }
         });
+    }
+    fetchLinkedNotes();
 
-        document.getElementById('comment-form').addEventListener('submit', function(e) {
+    // Fetch and render comments
+    async function fetchComments() {
+        const res = await fetch(`/jobs/<%= job._id %>`);
+        if(res.ok) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(await res.text(), 'text/html');
+            // This is a placeholder, ideally comments should be fetched via API
+        }
+        // For now, comments are not fetched via API, so we rely on server render
+    }
+    // fetchComments();
+
+    // Add comment (update to show latest comment instantly)
+    document.getElementById('comment-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const content = this.elements['content'].value;
+        const res = await fetch(`/jobs/<%= job._id %>/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+        if(res.ok) {
+            this.reset();
+            // Get the new comment from response
+            const data = await res.json();
+            const commentsList = document.querySelector('#comments-list ul.comments-list');
+            const commentItem = document.createElement('li');
+            commentItem.className = 'comment-item';
+            commentItem.innerHTML = `
+              <div class='comment-bubble'>
+                <div class='comment-avatar'><i class='fas fa-user-circle'></i></div>
+                <div class='comment-content'>
+                  <div class='comment-text'>${data.comment.content}</div>
+                  <div class='comment-meta'><span>${new Date(data.comment.createdAt).toLocaleString()}</span></div>
+                </div>
+              </div>
+            `;
+            if (commentsList) {
+                commentsList.insertBefore(commentItem, commentsList.firstChild);
+            } else {
+                // If no comments yet, create ul
+                const ul = document.createElement('ul');
+                ul.className = 'comments-list';
+                ul.appendChild(commentItem);
+                document.getElementById('comments-list').innerHTML = '';
+                document.getElementById('comments-list').appendChild(ul);
+            }
+        } else {
+            alert('Failed to add comment');
+        }
+    });
+
+    // Link Notes Modal logic
+    const linkNotesBtn = document.getElementById('link-notes-btn');
+    const linkNotesModal = document.getElementById('linkNotesModal');
+    const closeLinkNotesModal = document.getElementById('closeLinkNotesModal');
+    const availableNotesList = document.getElementById('available-notes-list');
+    const linkSelectedNotesBtn = document.getElementById('link-selected-notes-btn');
+    const openAddNoteModalBtn = document.getElementById('openAddNoteModal');
+
+    linkNotesBtn.onclick = async function() {
+      linkNotesModal.style.display = 'block';
+      // Fetch available notes
+      const res = await fetch(`/jobs/<%= job._id %>/available-notes`);
+      const notes = await res.json();
+      availableNotesList.innerHTML = notes.length ? notes.map(note => `<div><input type='checkbox' value='${note._id}'> <b>${note.title}</b></div>`).join('') : '<p>No available notes.</p>';
+    }
+    closeLinkNotesModal.onclick = function() { linkNotesModal.style.display = 'none'; }
+    window.onclick = function(event) { if(event.target == linkNotesModal) linkNotesModal.style.display = 'none'; if(event.target == addNoteModal) addNoteModal.style.display = 'none'; }
+
+    linkSelectedNotesBtn.onclick = async function() {
+      const selected = Array.from(availableNotesList.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+      if(selected.length === 0) { alert('Select at least one note!'); return; }
+      const res = await fetch('/jobs/link-notes', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobId: '<%= job._id %>', noteIds: selected })
+      });
+      if(res.ok) { linkNotesModal.style.display = 'none'; fetchLinkedNotes(); alert('Notes linked!'); } else { alert('Failed to link notes'); }
+    }
+
+    // Add Note Modal logic
+    const addNoteModal = document.getElementById('addNoteModal');
+    const closeAddNoteModal = document.getElementById('closeAddNoteModal');
+    openAddNoteModalBtn.onclick = function() { addNoteModal.style.display = 'block'; fetchSkills(); }
+    closeAddNoteModal.onclick = function() { addNoteModal.style.display = 'none'; }
+
+    async function fetchSkills() {
+      const res = await fetch('/api/skills?all=true');
+      const skills = await res.json();
+      const select = document.getElementById('skills-<%= job._id %>');
+      select.innerHTML = skills.map(skill => `<option value='${skill.name}'>${skill.name}</option>`).join('');
+    }
+
+    document.getElementById('add-note-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const title = document.getElementById('note-title-input').value;
+      const content = document.getElementById('note-desc-input').value;
+      const skills = Array.from(document.getElementById('skills-<%= job._id %>').selectedOptions).map(opt => opt.value);
+      const res = await fetch('/notes/create', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content, skills })
+      });
+      if(res.ok) {
+        addNoteModal.style.display = 'none';
+        linkNotesModal.style.display = 'block';
+        // Optionally refresh available notes
+        linkNotesBtn.onclick();
+        alert('Note added!');
+      } else {
+        alert('Failed to add note');
+      }
+    }
+
+    function attachDeleteSkillListeners() {
+      // Remove old listeners, switch to event delegation
+      const chipsRow = document.querySelector('.skills-chips-row');
+      if (!chipsRow._listenerAttached) {
+        chipsRow.addEventListener('click', async function(e) {
+          const btn = e.target.closest('.delete-skill-btn');
+          if (btn) {
             e.preventDefault();
-            const content = this.content.value;
-            fetch('/jobs/<%= job._id %>/comments', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ content }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Create new comment element
-                    const commentDiv = document.createElement('div');
-                    commentDiv.className = 'comment-item';
-                    commentDiv.innerHTML = `
-                        <p>${escapeHtml(data.comment.content)}</p>
-                        <small>${new Date(data.comment.createdAt).toLocaleString()}</small>
-                    `;
-                    
-                    // Add new comment to the list
-                    const commentsSection = document.querySelector('.job-section:nth-child(3)');
-                    commentsSection.insertBefore(commentDiv, document.getElementById('comment-form'));
-                    
-                    // Clear the form
-                    this.content.value = '';
-                } else {
-                    throw new Error(data.message || 'Error adding comment');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error adding comment: ' + error.message);
+            console.log('Delete skill clicked'); // Debug log
+            const skill = btn.getAttribute('data-skill');
+            const chips = Array.from(chipsRow.querySelectorAll('.chip-skill'));
+            const selected = chips.map(chip => chip.querySelector('.chip-skill-name').textContent.trim()).filter(s => s !== skill);
+            const statusSpan = document.getElementById('skills-update-status');
+            statusSpan.textContent = 'Saving...';
+            const res = await fetch(`/jobs/<%= job._id %>/skills`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ skills: selected })
             });
-        });
-
-        // Helper function to escape HTML
-        function escapeHtml(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        document.getElementById('delete-job-btn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to delete this job?')) {
-                fetch('/jobs/<%= job._id %>', {
-                    method: 'DELETE',
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = '/jobs';
-                    } else {
-                        throw new Error('Failed to delete job');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to delete job');
-                });
+            if (res.ok) {
+              btn.parentElement.remove();
+              statusSpan.textContent = 'Saved!';
+              setTimeout(()=>{ statusSpan.textContent = ''; }, 1200);
+              // Enable option in modal
+              const addSelect = document.getElementById('add-skill-select-modal');
+              if (addSelect) {
+                const opt = addSelect.querySelector(`option[value='${skill}']`);
+                if (opt) opt.disabled = false;
+              }
+            } else {
+              statusSpan.textContent = 'Failed to update.';
             }
+          }
         });
-
-        function unlinkNote(noteId) {
-            if (confirm('Are you sure you want to unlink this note?')) {
-                fetch('/jobs/<%= job._id %>/unlink-note', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ noteId }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        renderLinkedNotesChips();
-                    } else {
-                        throw new Error(data.message || 'Error unlinking note');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error unlinking note: ' + error.message);
-                });
-            }
+        chipsRow._listenerAttached = true;
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      attachDeleteSkillListeners();
+      // Add skill modal logic
+      const addBtn = document.getElementById('add-skill-btn');
+      const modal = document.getElementById('add-skill-modal');
+      const select = document.getElementById('add-skill-select-modal');
+      const saveBtn = document.getElementById('add-skill-save-btn');
+      const cancelBtn = document.getElementById('add-skill-cancel-btn');
+      const statusSpan = document.getElementById('skills-update-status');
+      addBtn.onclick = function() {
+        modal.style.display = 'flex';
+        select.value = '';
+      };
+      cancelBtn.onclick = function() {
+        modal.style.display = 'none';
+      };
+      saveBtn.onclick = async function() {
+        const skill = select.value;
+        if (!skill) return;
+        const chipsRow = document.querySelector('.skills-chips-row');
+        const chips = Array.from(chipsRow.querySelectorAll('.chip-skill'));
+        const selected = chips.map(chip => chip.querySelector('.chip-skill-name').textContent.trim());
+        if (selected.includes(skill)) return;
+        const newSkills = [...selected, skill];
+        statusSpan.textContent = 'Saving...';
+        const res = await fetch(`/jobs/<%= job._id %>/skills`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ skills: newSkills })
+        });
+        if (res.ok) {
+          // Add chip in UI
+          const span = document.createElement('span');
+          span.className = 'chip-skill';
+          span.style.display = 'flex';
+          span.style.alignItems = 'center';
+          span.style.gap = '6px';
+          span.innerHTML = `<span class='chip-skill-name'>${skill}</span> <button class="delete-skill-btn" data-skill="${skill}" title="Remove" style="background:none;border:none;color:#e53935;font-size:1.1em;cursor:pointer;padding:0 4px 0 2px;"><i class=\"fas fa-times\"></i></button>`;
+          chipsRow.appendChild(span);
+          attachDeleteSkillListeners();
+          statusSpan.textContent = 'Saved!';
+          setTimeout(()=>{ statusSpan.textContent = ''; }, 1200);
+          modal.style.display = 'none';
+          // Disable option in modal
+          select.querySelector(`option[value='${skill}']`).disabled = true;
+        } else {
+          statusSpan.textContent = 'Failed to update.';
         }
+      };
+      // Modal close on outside click
+      window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    });
     </script>
+    <%- include('partials/footer') %>
 </body>
 </html>

@@ -42,12 +42,19 @@
             background-color: var(--secondary-color);
             color: white;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s, box-shadow 0.2s;
+            font-weight: 600;
+            font-size: 1.08em;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .action-btn:hover {
             background-color: var(--secondary-hover);
+            box-shadow: 0 4px 16px rgba(33,150,243,0.13);
         }
         .filters {
             background-color: white;
@@ -74,75 +81,149 @@
         .job-list {
             list-style-type: none;
             padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
         .job-item {
-            background: white;
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            background: linear-gradient(120deg, #f8fafc 60%, #e3f0ff 100%);
+            margin-bottom: 0;
+            padding: 28px 32px;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(33,150,243,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            border: 1.5px solid #e3eafc;
+            position: relative;
         }
         .job-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 32px rgba(33,150,243,0.13);
+            border-color: #b6d0ff;
         }
         .job-details {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         .job-company {
-            font-size: 1.2em;
+            font-size: 1.25em;
             color: var(--primary-color);
-            margin-bottom: 10px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
         }
-        .job-date, .job-tech {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 5px;
+        .job-date {
+            font-size: 1em;
+            color: #6c757d;
+            margin-bottom: 2px;
+        }
+        .job-tech {
+            font-size: 1em;
+            color: #1976d2;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .tech-tag {
             display: inline-block;
-            background-color: #e0e0e0;
-            padding: 3px 8px;
-            margin-right: 5px;
-            border-radius: 3px;
-            font-size: 0.8em;
-            color: #333;
-        }
-        .job-status {
-            min-width: 150px;
-            text-align: right;
-        }
-        .status-select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .status-button {
-            width: 100%;
-            padding: 8px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .status-button:hover {
-            background-color: var(--primary-hover);
+            background-color: #e3eafc;
+            padding: 5px 12px;
+            margin-right: 6px;
+            border-radius: 12px;
+            font-size: 0.98em;
+            color: #1976d2;
+            font-weight: 500;
+            margin-bottom: 2px;
         }
         .view-details {
             display: inline-block;
             margin-top: 10px;
             color: var(--secondary-color);
             text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            border-radius: 6px;
+            padding: 6px 16px;
+            background: #e3f0ff;
+            transition: background 0.2s, color 0.2s;
         }
         .view-details:hover {
-            text-decoration: underline;
+            background: var(--secondary-color);
+            color: #fff;
+        }
+        .job-comments {
+            margin-top: 12px;
+            background: #f4f8fb;
+            border-radius: 10px;
+            padding: 10px 16px;
+            box-shadow: 0 1px 4px rgba(33,150,243,0.04);
+        }
+        .job-comments h4 {
+            margin: 0 0 6px 0;
+            font-size: 1.08em;
+            color: #1976d2;
+            font-weight: 600;
+        }
+        .job-comments ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 0.98em;
+        }
+        .job-status {
+            min-width: 180px;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .status-form {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .status-select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1.5px solid #b6d0ff;
+            font-size: 1em;
+            background: #f8fafc;
+            color: #1976d2;
+            font-weight: 500;
+            transition: border-color 0.2s;
+        }
+        .status-select:focus {
+            border-color: #1976d2;
+            outline: none;
+        }
+        .status-button {
+            padding: 8px 18px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .status-button:hover {
+            background-color: var(--primary-hover);
+        }
+        .pagination-link {
+            font-size: 1.08em;
+            border-radius: 6px;
+            padding: 8px 14px;
+            margin: 0 2px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
         }
         .job-notes {
             margin-top: 20px;
@@ -215,6 +296,49 @@
         #add-note-form button:hover {
             background-color: var(--primary-hover);
         }
+        .filters-inline {
+            display: flex;
+            gap: 24px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .filters-inline .filter-group {
+            margin-bottom: 0;
+        }
+        .skills-input-row {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            background: #fff;
+            border: 1.5px solid #81c784;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            min-height: 44px;
+            box-shadow: 0 2px 8px rgba(76,175,80,0.07);
+            font-size: 1em;
+            gap: 8px;
+        }
+        .skills-input-row:hover {
+            border-color: #388e3c;
+        }
+        .skills-label-inline {
+            font-weight: 600;
+            color: #2e7d32;
+            margin-right: 10px;
+            font-size: 1em;
+        }
+        .chip-skill {
+            display: inline-block;
+            background: #e0e0e0;
+            color: #333;
+            border-radius: 16px;
+            padding: 6px 14px;
+            font-size: 0.98em;
+            margin-right: 8px;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -227,8 +351,9 @@
             <a href="/create-resume" class="action-btn"><i class="fas fa-file-alt"></i> Create Resume</a>
             <a href="/profile" class="action-btn"><i class="fas fa-user"></i> My Profile</a>
             <a href="/notes" class="action-btn"><i class="fas fa-sticky-note"></i> Go to Notes</a>
+            <a href="/skills" class="action-btn"><i class="fas fa-cogs"></i> Manage Skills</a>
         </div>
-        <div class="filters">
+        <div class="filters filters-inline">
             <div class="filter-group">
                 <label for="statusFilter">Status:</label>
                 <select id="statusFilter" name="status">
@@ -242,6 +367,15 @@
                 <label for="companySearch">Company:</label>
                 <input type="text" id="companySearch" name="company" placeholder="Search company" value="<%= filters.company || '' %>">
             </div>
+            <div class="filter-group">
+                <label for="skillFilter">Skill:</label>
+                <select id="skillFilter" name="skill">
+                    <option value="">All</option>
+                    <% allSkills.forEach(skill => { %>
+                        <option value="<%= skill %>" <%= filters.skill === skill ? 'selected' : '' %>><%= skill %></option>
+                    <% }); %>
+                </select>
+            </div>
         </div>
         <ul class="job-list">
             <% jobs.forEach(job => { %>
@@ -250,12 +384,28 @@
                         <div class="job-company"><i class="fas fa-building"></i> <%= job.companyName %></div>
                         <div class="job-date"><i class="far fa-calendar-alt"></i> Applied on: <%= job.dateApplied.toDateString() %></div>
                         <div class="job-tech">
-                            <i class="fas fa-code"></i> Technologies: 
-                            <% job.technologies.forEach(tech => { %>
-                                <span class="tech-tag"><%= tech %></span>
-                            <% }); %>
+                            <i class="fas fa-code"></i> Skills:
+                            <% if (job.skills && job.skills.length > 0) { %>
+                                <% job.skills.forEach(skill => { %>
+                                    <span class="tech-tag"><%= skill %></span>
+                                <% }); %>
+                            <% } else { %>
+                                <span style="color:#aaa;font-size:0.98em;">No skills</span>
+                            <% } %>
                         </div>
                         <a href="/jobs/<%= job._id %>" class="view-details">View Details</a>
+                        <div class="job-comments">
+                            <h4>Comments</h4>
+                            <ul>
+                                <% if (job.comments && job.comments.length > 0) { %>
+                                    <% job.comments.forEach(comment => { %>
+                                        <li><%= comment.content %> <span style="font-size:0.8em;color:#888;">(<%= new Date(comment.createdAt).toLocaleString() %>)</span></li>
+                                    <% }); %>
+                                <% } else { %>
+                                    <li>No comments yet.</li>
+                                <% } %>
+                            </ul>
+                        </div>
                     </div>
                     <div class="job-status">
                         <form class="status-form" action="/updateStatus/<%= job._id %>" method="POST">
@@ -270,28 +420,38 @@
                 </li>
             <% }); %>
         </ul>
+        <!-- Pagination UI -->
+        <% if (pagination && pagination.totalPages > 1) { %>
+        <div class="pagination" style="display:flex;justify-content:center;gap:8px;margin:24px 0;">
+            <% for(let i=1; i<=pagination.totalPages; i++) { %>
+                <a href="?page=<%= i %>&limit=<%= pagination.limit %><%= filters.status ? `&status=${filters.status}` : '' %><%= filters.company ? `&company=${filters.company}` : '' %><%= filters.skill ? `&skill=${filters.skill}` : '' %>"
+                   class="pagination-link" style="padding:8px 14px;border-radius:6px;<%= pagination.page === i ? 'background:#2196F3;color:#fff;font-weight:bold;' : 'background:#e0e0e0;color:#333;' %>"><%= i %></a>
+            <% } %>
+        </div>
+        <% } %>
     </div>
     <script>
         const statusFilter = document.getElementById('statusFilter');
         const companySearch = document.getElementById('companySearch');
+        const skillFilter = document.getElementById('skillFilter');
         let typingTimer;
 
         function filterJobs() {
             const status = statusFilter.value;
             const company = companySearch.value;
-            window.location.href = `/?status=${status}&company=${company}`;
+            const skill = skillFilter.value;
+            window.location.href = `/?status=${status}&company=${company}&skill=${skill}`;
         }
 
         statusFilter.addEventListener('change', filterJobs);
-
         companySearch.addEventListener('input', function() {
             clearTimeout(typingTimer);
             typingTimer = setTimeout(filterJobs, 500); // Wait for 500ms after user stops typing
         });
-
         companySearch.addEventListener('keydown', function() {
             clearTimeout(typingTimer);
         });
+        skillFilter.addEventListener('change', filterJobs);
     </script>
 </body>
 </html>

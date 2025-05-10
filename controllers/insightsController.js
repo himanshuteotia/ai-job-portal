@@ -9,29 +9,9 @@ const {
 
 exports.getInsights = async (req, res) => {
   try {
-    let insight = await Insight.findOne({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
-
-    if (!insight || moment().diff(insight.createdAt, "hours") >= 24) {
-      const jobs = await Job.find({ user: req.user._id }).sort({
-        dateApplied: -1,
-      });
-
-      const techStats = analyzeTechnologies(jobs);
-      const statusChanges = analyzeStatusChanges(jobs);
-      const suggestions = generateSuggestions(techStats, statusChanges);
-
-      insight = new Insight({
-        user: req.user._id,
-        suggestions,
-        techStats,
-        statusChanges,
-      });
-      await insight.save();
-    }
-
-    res.render("insights", insight);
+    // Fetch all insights, sorted by date desc
+    const insights = await Insight.find({}).sort({ date: -1 });
+    res.render("insights", { insights });
   } catch (error) {
     res.status(500).render("error", { message: "Error generating insights" });
   }
@@ -59,4 +39,29 @@ exports.regenerateInsights = async (req, res) => {
   } catch (error) {
     res.status(500).render("error", { message: "Error regenerating insights" });
   }
+};
+
+// Helper to calculate and save daily insights (for cron job or manual trigger)
+exports.calculateAndSaveInsights = async function () {
+  const Job = require("../models/Job");
+  const Insight = require("../models/Insight");
+  const {
+    analyzeTechnologies,
+    analyzeStatusChanges,
+    generateSuggestions,
+  } = require("../utils/insightHelpers");
+
+  const jobs = await Job.find({});
+  const techStats = analyzeTechnologies(jobs);
+  const statusChanges = analyzeStatusChanges(jobs);
+  const suggestions = generateSuggestions(techStats, statusChanges);
+
+  const insight = new Insight({
+    date: new Date(),
+    suggestions,
+    techStats,
+    statusChanges,
+  });
+  await insight.save();
+  return insight;
 };

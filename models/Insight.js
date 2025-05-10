@@ -1,32 +1,26 @@
 const mongoose = require("mongoose");
 
-const insightSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const techStatSchema = new mongoose.Schema(
+  {
+    name: String,
+    successRate: Number,
+    total: Number,
+    success: Number,
   },
-  suggestions: [String],
-  techStats: [
-    {
-      name: String,
-      count: Number,
-      successRate: Number,
-    },
-  ],
+  { _id: false }
+);
+
+const insightSchema = new mongoose.Schema({
+  date: { type: Date, default: Date.now, unique: true },
   statusChanges: {
     Pending: {
-      "In Process": Number,
-      Rejected: Number,
-    },
-    "In Process": {
-      Rejected: Number,
+      "In Process": { type: Number, default: 0 },
+      Rejected: { type: Number, default: 0 },
+      Success: { type: Number, default: 0 },
     },
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  techStats: [techStatSchema],
+  suggestions: [String],
 });
 
 module.exports = mongoose.model("Insight", insightSchema);

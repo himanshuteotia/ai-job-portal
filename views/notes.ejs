@@ -10,13 +10,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-hover: #45a049;
+            --secondary-color: #2196F3;
+            --secondary-hover: #1E88E5;
+        }
         body, html {
             height: 100%;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-            background-color: #ffffff;
-            color: #37352f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
         }
         .notes-container {
             display: flex;
@@ -24,10 +30,11 @@
         }
         .notes-sidebar {
             width: 250px;
-            background-color: #f7f6f3;
+            background-color: #fff;
             display: flex;
             flex-direction: column;
             border-right: 1px solid #e1e1e0;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.04);
         }
         .sidebar-header {
             padding: 16px;
@@ -35,9 +42,9 @@
         }
         .sidebar-header h1 {
             margin: 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: #37352f;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
         }
         .button-container {
             display: flex;
@@ -47,6 +54,16 @@
         }
         #new-manual-note-btn, #new-ai-note-btn {
             width: 100%;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 4px;
+            border: none;
+            padding: 10px 0;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        #new-manual-note-btn:hover, #new-ai-note-btn:hover {
+            background-color: var(--secondary-hover);
         }
         #notes-list {
             flex: 1;
@@ -78,10 +95,14 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 16px 32px;
+            padding: 32px 48px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin: 32px 32px 32px 0;
         }
         #note-title {
-            font-size: 40px;
+            font-size: 32px;
             font-weight: bold;
             border: none;
             outline: none;
@@ -110,43 +131,13 @@
         }
         .skill-chip {
             display: inline-block;
-            background-color: #e1e1e0;
+            background-color: #e0e0e0;
             padding: 4px 8px;
             border-radius: 3px;
             font-size: 12px;
             margin-right: 4px;
             margin-bottom: 4px;
         }
-
-        /* Custom styles for code blocks */
-        .ql-snow .ql-editor pre.ql-syntax {
-            background-color: #f6f8fa;
-            color: #24292e;
-            overflow: visible;
-            border-radius: 3px;
-            padding: 16px;
-        }
-
-        /* Style for the language selector */
-        .ql-snow .ql-picker.ql-code-block-language {
-            width: 120px;
-        }
-
-        .ql-snow .ql-picker.ql-code-block-language .ql-picker-label,
-        .ql-snow .ql-picker.ql-code-block-language .ql-picker-item {
-            padding-left: 8px;
-        }
-
-        .ql-snow .ql-picker.ql-code-block-language .ql-picker-label::before,
-        .ql-snow .ql-picker.ql-code-block-language .ql-picker-item::before {
-            content: 'Language';
-        }
-
-        .ql-snow .ql-picker.ql-code-block-language .ql-picker-label[data-value]::before,
-        .ql-snow .ql-picker.ql-code-block-language .ql-picker-item[data-value]::before {
-            content: attr(data-value);
-        }
-
         .note-tag {
             font-size: 10px;
             padding: 2px 5px;
@@ -154,17 +145,14 @@
             margin-top: 5px;
             display: inline-block;
         }
-
         .ai-tag {
             background-color: #34a853;
             color: white;
         }
-
         .manual-tag {
             background-color: #4285f4;
             color: white;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -176,7 +164,6 @@
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
         }
-
         .modal-content {
             background-color: #fefefe;
             margin: 10% auto;
@@ -184,12 +171,11 @@
             border: 1px solid #888;
             width: 90%;
             max-width: 600px;
-            border-radius: 5px;
+            border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-
         #ai-prompt {
-            width: calc(100% - 20px); /* Subtract left and right padding */
+            width: calc(100% - 20px);
             height: 150px;
             margin-bottom: 15px;
             padding: 10px;
@@ -197,9 +183,8 @@
             border-radius: 4px;
             font-size: 16px;
             resize: vertical;
-            box-sizing: border-box; /* Include padding in width calculation */
+            box-sizing: border-box;
         }
-
         #generate-ai-note, #close-modal {
             padding: 10px 15px;
             margin-right: 10px;
@@ -209,17 +194,14 @@
             font-size: 14px;
             transition: background-color 0.3s;
         }
-
         #generate-ai-note {
             background-color: #4CAF50;
             color: white;
         }
-
         #close-modal {
             background-color: #f44336;
             color: white;
         }
-
         #generate-ai-note:hover, #close-modal:hover {
             opacity: 0.8;
         }
@@ -239,7 +221,12 @@
                 <% if (typeof notes !== 'undefined' && notes.length > 0) { %>
                     <% notes.forEach((note, index) => { %>
                         <div class="note-item <%= index === 0 ? 'active' : '' %>" data-id="<%= note._id %>">
-                            <h3><%= note.title || 'Untitled' %></h3>
+                            <h3 style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                              <span><%= note.title || 'Untitled' %></span>
+                              <button class="download-html-btn" data-id="<%= note._id %>" title="Download as HTML" style="background:none;border:none;color:#2196f3;font-size:1.1em;cursor:pointer;padding:0 4px;">
+                                <i class="fas fa-download"></i>
+                              </button>
+                            </h3>
                             <p class="note-preview"><%= note.content.replace(/<[^>]*>/g, '').slice(0, 50) %>...</p>
                             <span class="note-tag <%= note.isAIGenerated ? 'ai-tag' : 'manual-tag' %>">
                                 <%= note.isAIGenerated ? 'AI-Generated' : 'Manual' %>
@@ -254,12 +241,16 @@
             </div>
         </div>
         <div class="notes-content">
-            <input type="text" id="note-title" placeholder="Untitled">
-            <div id="editor-container"></div>
-            <div id="skills-container">
-                <input type="text" id="skill-input" placeholder="Add a skill (press Enter)">
-                <div id="skills-chips"></div>
+            <div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:8px;gap:6px;">
+                <button id="convert-md-btn" title="Convert to Markdown" style="background:none;border:none;color:#666;font-size:1.2em;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background 0.2s;">
+                    <i class="fab fa-markdown"></i>
+                </button>
+                <button id="save-note-btn" title="Save Note" style="background:none;border:none;color:#388e3c;font-size:1.2em;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background 0.2s;">
+                    <i class="fas fa-save"></i>
+                </button>
             </div>
+            <input type="text" id="note-title" placeholder="Untitled">
+            <div id="editor-container" style="min-height:300px;max-height:70vh;overflow:auto;"></div>
         </div>
     </div>
 
@@ -272,10 +263,12 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/turndown/dist/turndown.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let currentNoteId = null;
-            let skills = [];
+            let currentFormat = 'html';
 
             // Define available languages
             const languages = [
@@ -342,20 +335,20 @@
                     .then(note => {
                         currentNoteId = note._id;
                         document.getElementById('note-title').value = note.title || '';
-                        
+                        currentFormat = note.format || 'html';
                         // Sanitize the content before setting it
                         const sanitizedContent = DOMPurify.sanitize(note.content || '');
-                        quill.setContents(quill.clipboard.convert(sanitizedContent));
-                        
-                        skills = note.skills ? note.skills.map(skill => ({ name: skill.name })) : [];
-                        updateSkillChips();
+                        if (currentFormat === 'markdown') {
+                            quill.setText(sanitizedContent);
+                        } else {
+                            quill.setContents(quill.clipboard.convert(sanitizedContent));
+                        }
                         document.querySelectorAll('.note-item').forEach(item => item.classList.remove('active'));
                         const activeNoteItem = document.querySelector(`.note-item[data-id="${noteId}"]`);
                         if (activeNoteItem) {
                             activeNoteItem.classList.add('active');
                         }
-
-                        // Highlight code blocks after loading
+                        setTimeout(() => { quill.focus(); }, 0);
                         setTimeout(() => {
                             quill.root.querySelectorAll('pre').forEach((block) => {
                                 hljs.highlightElement(block);
@@ -376,12 +369,26 @@
                 });
             });
 
-            function saveNote(isAIGenerated = false) {
+            // Default note title logic
+            let noteCount = <%= notes && notes.length ? notes.length : 0 %>;
+            function getDefaultNoteTitle() {
+                noteCount++;
+                return `Document ${noteCount}`;
+            }
+            function createNewNote() {
+                currentNoteId = null;
+                document.getElementById('note-title').value = getDefaultNoteTitle();
+                quill.setContents([]);
+                document.querySelectorAll('.note-item').forEach(item => item.classList.remove('active'));
+                setTimeout(() => { quill.focus(); }, 0);
+                saveNote(false);
+            }
+
+            function saveNote(isAIGenerated = false, formatOnly = false) {
                 const title = document.getElementById('note-title').value;
-                const content = DOMPurify.sanitize(quill.root.innerHTML);
+                const content = currentFormat === 'markdown' ? quill.root.innerText : DOMPurify.sanitize(quill.root.innerHTML);
                 const method = currentNoteId ? 'PUT' : 'POST';
                 const url = currentNoteId ? `/notes/${currentNoteId}` : '/notes/create';
-
                 fetch(url, {
                     method: method,
                     headers: {
@@ -390,7 +397,8 @@
                     body: JSON.stringify({ 
                         title, 
                         content, 
-                        isAIGenerated: Boolean(isAIGenerated)
+                        isAIGenerated: Boolean(isAIGenerated),
+                        format: currentFormat
                     }),
                 })
                 .then(response => {
@@ -400,7 +408,7 @@
                     return response.json();
                 })
                 .then(savedNote => {
-                    if (!currentNoteId) {
+                    if (!currentNoteId && !formatOnly) {
                         addNoteToList(savedNote);
                     }
                     currentNoteId = savedNote._id;
@@ -428,21 +436,13 @@
                 notesList.prepend(noteItem);
             }
 
-            function updateSkillChips() {
-                const skillsContainer = document.getElementById('skills-chips');
-                skillsContainer.innerHTML = skills.map(skill => `
-                    <span class="skill-chip">${skill.name}
-                        <span class="remove-skill" data-skill="${skill.name}">&times;</span>
-                    </span>
-                `).join('');
-            }
-
             const newManualNoteBtn = document.getElementById('new-manual-note-btn');
             const newAiNoteBtn = document.getElementById('new-ai-note-btn');
             const aiNoteModal = document.getElementById('ai-note-modal');
             const generateAiNoteBtn = document.getElementById('generate-ai-note');
             const closeModalBtn = document.getElementById('close-modal');
             const aiPromptInput = document.getElementById('ai-prompt');
+            const saveNoteBtn = document.getElementById('save-note-btn');
 
             newManualNoteBtn.addEventListener('click', createNewNote);
 
@@ -463,15 +463,9 @@
                 }
             });
 
-            function createNewNote() {
-                currentNoteId = null;
-                document.getElementById('note-title').value = '';
-                quill.setContents([]);
-                skills = [];
-                updateSkillChips();
-                document.querySelectorAll('.note-item').forEach(item => item.classList.remove('active'));
+            saveNoteBtn.addEventListener('click', function() {
                 saveNote(false);
-            }
+            });
 
             function generateAiNote(prompt) {
                 // Here you would typically make an API call to your AI service
@@ -481,8 +475,6 @@
                 currentNoteId = null;
                 document.getElementById('note-title').value = 'AI Generated Note';
                 quill.setContents([{ insert: aiGeneratedContent }]);
-                skills = [];
-                updateSkillChips();
                 
                 saveNote(true);
                 
@@ -498,24 +490,6 @@
                     });
                 }
                 debouncedSave();
-            });
-
-            document.getElementById('skill-input').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && this.value.trim()) {
-                    skills.push({ name: this.value.trim() });
-                    this.value = '';
-                    updateSkillChips();
-                    saveNote();
-                }
-            });
-
-            document.getElementById('skills-chips').addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-skill')) {
-                    const skillToRemove = e.target.getAttribute('data-skill');
-                    skills = skills.filter(skill => skill.name !== skillToRemove);
-                    updateSkillChips();
-                    saveNote();
-                }
             });
 
             // Load the first note by default
@@ -542,6 +516,62 @@
 
             document.getElementById('note-title').addEventListener('input', debouncedSave);
             quill.on('text-change', debouncedSave);
+
+            // Download as HTML logic
+            document.querySelectorAll('.download-html-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const noteId = this.getAttribute('data-id');
+                    fetch(`/notes/${noteId}`)
+                        .then(res => res.json())
+                        .then(note => {
+                            const title = note.title || 'note';
+                            const htmlContent = note.content || '';
+                            const blob = new Blob([htmlContent], { type: 'text/html' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${title.replace(/[^a-zA-Z0-9-_]/g, '_')}.html`;
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => {
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            }, 100);
+                        });
+                });
+            });
+
+            // Convert to Markdown logic
+            const convertMdBtn = document.getElementById('convert-md-btn');
+            convertMdBtn.addEventListener('click', function() {
+                // Get plain text (may contain markdown)
+                const plainText = quill.getText();
+                // Convert markdown to HTML
+                const html = marked.parse(plainText);
+                // Set HTML in editor
+                quill.setContents(quill.clipboard.convert(html));
+            });
+
+            // Add paste event listener for markdown auto-formatting
+            quill.root.addEventListener('paste', function(e) {
+                const clipboardData = e.clipboardData || window.clipboardData;
+                if (!clipboardData) return;
+                const pastedText = clipboardData.getData('text/plain');
+                // Simple check for markdown (bold, code, etc)
+                if (/[*_`#\-]/.test(pastedText)) {
+                    e.preventDefault();
+                    // Convert markdown to HTML
+                    const html = marked.parse(pastedText);
+                    // Insert HTML at cursor
+                    const range = quill.getSelection();
+                    if (range) {
+                        quill.clipboard.dangerouslyPasteHTML(range.index, html);
+                    } else {
+                        quill.clipboard.dangerouslyPasteHTML(quill.getLength(), html);
+                    }
+                }
+            });
         });
     </script>
 </body>

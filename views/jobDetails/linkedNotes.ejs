@@ -1,0 +1,16 @@
+<div class="job-section linked-notes-section">
+    <h2>Linked Notes</h2>
+    <div id="linked-notes-chips">
+        <% if (job.relatedNotes && job.relatedNotes.length > 0) { %>
+            <% job.relatedNotes.forEach(note => { %>
+                <span class="note-chip" title="<%= note.content %>">
+                    <%= note.title || 'Untitled Note' %>
+                    <span class="unlink-note" data-note-id="<%= note._id %>">&times;</span>
+                </span>
+            <% }) %>
+        <% } else { %>
+            <p>No linked notes yet.</p>
+        <% } %>
+    </div>
+    <button id="link-notes-btn" class="btn btn-secondary">Link Notes</button>
+</div>

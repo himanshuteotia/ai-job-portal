@@ -1,0 +1,17 @@
+<div class="job-section comments-section">
+    <h2>Comments</h2>
+    <div class="comments-list">
+        <% job.comments.forEach(comment => { %>
+            <div class="comment-item">
+                <p><%= comment.content %></p>
+                <small><%= comment.createdAt.toLocaleString() %></small>
+            </div>
+        <% }) %>
+    </div>
+    
+    <h3>Add a Comment</h3>
+    <form id="comment-form">
+        <textarea name="content" rows="4" required class="form-control"></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+    </form>
+</div>

@@ -1,0 +1,39 @@
+<div class="form-group skills-group">
+    <label for="skills" class="skills-label">Skills:</label>
+    <div class="skills-row">
+        <select id="skills" name="skills" multiple required>
+            <% (allSkills || []).forEach(skill => { %>
+                <option value="<%= skill %>" <%= (selectedSkills||[]).includes(skill) ? 'selected' : '' %>><%= skill %></option>
+            <% }) %>
+        </select>
+    </div>
+</div>
+<style>
+.skills-group { margin-bottom: 22px; }
+.skills-label { font-size: 1.2em; color: #2e7d32; margin-bottom: 4px; font-weight: bold; }
+.skills-row { display: flex; gap: 0; align-items: center; }
+#skills { width: 100% !important; min-width: 0; max-width: 100%; padding: 12px 14px; border-radius: 8px; border: 2px solid #81c784; font-size: 16px; background: #f7fff7; box-shadow: 0 2px 8px rgba(76,175,80,0.07); transition: border-color 0.2s; }
+#skills:focus { border-color: #388e3c; outline: none; }
+.choices { width: 100% !important; min-width: 0; max-width: 100%; }
+.choices__inner { width: 100% !important; min-width: 0; max-width: 100%; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+(function() {
+    const skillsSelect = document.getElementById('skills');
+    let choices;
+    function initChoices() {
+        if (choices) choices.destroy();
+        choices = new Choices(skillsSelect, {
+            removeItemButton: true,
+            searchResultLimit: 10,
+            searchPlaceholderValue: 'Search skills...',
+            placeholder: true,
+            placeholderValue: 'Select skills',
+            duplicateItemsAllowed: false,
+            shouldSort: false
+        });
+    }
+    initChoices();
+})();
+</script> 

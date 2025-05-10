@@ -32,6 +32,8 @@ app.set("views", path.join(__dirname, "views"));
 
 const jobRoutes = require("./routes/jobs");
 const noteRoutes = require("./routes/notes");
+const resumeRoutes = require("./routes/resume");
+const linkedinRoutes = require("./routes/linkedin");
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -39,17 +41,23 @@ app.use((req, res, next) => {
   next();
 });
 
+// Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, "public")));
+
 // Use note routes
 app.use("/notes", noteRoutes);
 
 // Use job routes for '/jobs' URL
 app.use("/jobs", jobRoutes);
 
+// Use resume routes
+app.use("/create-resume", resumeRoutes);
+
+// Use LinkedIn routes
+app.use("/linkedin", linkedinRoutes);
+
 // Use job routes for the root URL
 app.use("/", jobRoutes);
-
-// Serve static files from the 'public' folder
-app.use(express.static(path.join(__dirname, "public")));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

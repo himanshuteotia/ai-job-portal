@@ -1,0 +1,12 @@
+<div class="job-title-section">
+    <h1><%= job.companyName %> - <%= job.title || 'Job Title' %></h1>
+    <div class="job-meta">
+        <span><i class="fas fa-map-marker-alt"></i> <%= job.location || 'Location' %></span>
+        <span><i class="fas fa-briefcase"></i> <%= job.experienceRequired %> years</span>
+        <span><i class="fas fa-rupee-sign"></i> <%= job.salary || 'Not disclosed' %></span>
+    </div>
+</div>
+<div class="job-status">
+    <span class="status-badge <%= job.status.toLowerCase() %>"><%= job.status %></span>
+    <span class="applied-date">Applied on: <%= job.dateApplied.toLocaleDateString() %></span>
+</div>

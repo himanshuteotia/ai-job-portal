@@ -1,0 +1,11 @@
+<div class="job-section">
+    <h2>Job Info & Actions</h2>
+    <p><strong>Company:</strong> <%= job.companyName %></p>
+    <p><strong>Applied On:</strong> <%= job.dateApplied.toLocaleDateString() %></p>
+    <p><strong>Status:</strong> <span class="status-badge <%= job.status.toLowerCase() %>"><%= job.status %></span></p>
+    <p><strong>Experience Required:</strong> <%= job.experienceRequired %> years</p>
+    
+    <h3>Actions</h3>
+    <a href="/jobs/<%= job._id %>/edit" class="btn btn-primary">Edit Job</a>
+    <button id="delete-job-btn" class="btn btn-danger">Delete Job</button>
+</div>

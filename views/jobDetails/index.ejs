@@ -1,0 +1,46 @@
+<% if (typeof job === 'undefined' || job === null) { %>
+  <p>Error: Job details not available</p>
+<% } else { %>
+  <% try { %>
+    <%- include('../partials/header', { title: `${job.companyName} - Job Details` }) %>
+
+    <div class="job-details-container">
+        <div class="job-header">
+            <%- include('jobHeader', { job }) %>
+        </div>
+
+        <div class="job-content">
+            <div class="left-panel">
+                <%- include('jobDescription', { job }) %>
+                <%- include('jobRequirements', { job }) %>
+                <%- include('companyInfo', { job }) %>
+            </div>
+
+            <div class="right-panel">
+                <%- include('jobActions', { job }) %>
+                <%- include('similarJobs', { job }) %>
+            </div>
+        </div>
+
+        <div class="full-width-section">
+            <%- include('comments', { job }) %>
+            <!-- Removed linkedNotes from here -->
+        </div>
+    </div>
+
+    <%- include('modals', { job }) %>
+
+    <!-- Add this new modal -->
+    <div id="noteContentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="noteTitle"></h2>
+            <p id="noteContent"></p>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+  <% } catch (error) { %>
+    <p>Error rendering job details: <%= error.message %></p>
+  <% } %>
+<% } %>

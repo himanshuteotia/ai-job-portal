@@ -25,7 +25,7 @@ exports.createNote = async (req, res) => {
 exports.updateNote = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content, isAIGenerated } = req.body;
+    const { title, content, skills, isAIGenerated } = req.body;
 
     const note = await Note.findById(id);
     if (!note) {
@@ -37,12 +37,27 @@ exports.updateNote = async (req, res) => {
         .json({ message: "You don't have permission to update this note" });
     }
 
+    let skillIds = note.skills || [];
+    if (skills && Array.isArray(skills)) {
+      skillIds = await Promise.all(
+        skills.map(async (skillName) => {
+          let skill = await Skill.findOne({ name: skillName });
+          if (!skill) {
+            skill = new Skill({ name: skillName });
+            await skill.save();
+          }
+          return skill._id;
+        })
+      );
+    }
+
     const updatedNote = await Note.findByIdAndUpdate(
       id,
       {
         title,
         content,
-        isAIGenerated: Boolean(isAIGenerated), // Ensure it's a boolean
+        skills: skillIds,
+        isAIGenerated: Boolean(isAIGenerated),
       },
       { new: true }
     );
@@ -68,60 +83,16 @@ exports.getNotes = async (req, res, next) => {
       createdAt: -1,
     });
     console.log("Notes found:", notes.length);
-    res.render("notes", { notes, user: req.user });
+    const allSkillsDocs = await Skill.find().sort("name");
+    const allSkills = allSkillsDocs.map((s) => s.name);
+    res.render("notes", { notes, user: req.user, allSkills });
   } catch (error) {
     console.error("Error in getNotes controller:", error);
     next(error);
   }
 };
 
-exports.getSkills = async (req, res) => {
-  try {
-    const skills = await Skill.find().sort("name");
-    res.json(skills);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching skills", error: error.message });
-  }
-};
-
 // Add these new controller functions
-exports.updateNote = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, content, skills, isAIGenerated } = req.body;
-
-    // Create skills if they don't exist
-    const skillIds = await Promise.all(
-      skills.map(async (skillName) => {
-        let skill = await Skill.findOne({ name: skillName });
-        if (!skill) {
-          skill = new Skill({ name: skillName });
-          await skill.save();
-        }
-        return skill._id;
-      })
-    );
-
-    const updatedNote = await Note.findByIdAndUpdate(
-      id,
-      {
-        title,
-        content,
-        skills: skillIds,
-        isAIGenerated: isAIGenerated || false,
-      },
-      { new: true }
-    );
-    res.json(updatedNote);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating note", error: error.message });
-  }
-};
-
 exports.deleteNote = async (req, res) => {
   try {
     const { id } = req.params;

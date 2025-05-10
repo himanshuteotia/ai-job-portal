@@ -5,11 +5,26 @@ const analyticsController = require("../controllers/analyticsController");
 const insightsController = require("../controllers/insightsController");
 const resumeController = require("../controllers/resumeController");
 const authController = require("../controllers/authController");
-const noteController = require("../controllers/noteController"); // Add this line
+const noteController = require("../controllers/noteController");
 const auth = require("../middleware/auth");
 const Job = require("../models/Job");
 const mongoose = require("mongoose");
-const Note = require("../models/Note"); // Add this at the top of the file
+const Note = require("../models/Note");
+const skillController = require("../controllers/skillController");
+
+// Add this near the top of your routes
+router.get("/favicon.ico", (req, res) => res.status(204));
+
+// Skills Management UI page
+router.get("/skills", (req, res) => {
+  res.render("skills");
+});
+
+// Skills API (must be before any dynamic :id routes)
+router.get("/api/skills", skillController.getSkills);
+router.post("/api/skills", skillController.addSkill);
+router.put("/api/skills/:id/verify", skillController.verifySkill);
+router.delete("/api/skills/:id", skillController.deleteSkill);
 
 // Main route for jobs listing
 router.get("/", auth, jobController.getJobs);
@@ -48,30 +63,7 @@ router.post("/update-profile", authController.updateProfile);
 router.get("/notes", auth, noteController.getNotes);
 
 // Job details route
-router.get("/:id", async (req, res) => {
-  // Favicon.ico request ko ignore karo
-  if (req.params.id === "favicon.ico") {
-    return res.status(204).end();
-  }
-
-  try {
-    const jobId = req.params.id;
-    // ObjectId validation
-    if (!mongoose.Types.ObjectId.isValid(jobId)) {
-      return res.status(400).send("Invalid job ID");
-    }
-
-    const job = await Job.findById(jobId).populate("relatedNotes");
-    console.log("Job with populated notes:", job);
-    if (!job) {
-      return res.status(404).send("Job not found");
-    }
-    res.render("jobDetails", { job });
-  } catch (error) {
-    console.error("Error fetching job details:", error);
-    res.status(500).send("Server error");
-  }
-});
+router.get("/:id", auth, jobController.getJobDetails);
 
 // Add comment route
 router.post("/:id/comments", async (req, res) => {
@@ -202,5 +194,24 @@ router.get("/:id/related-notes", auth, async (req, res) => {
     res.status(500).json({ message: "Error fetching related notes" });
   }
 });
+
+// Remove or comment out this line if you want to completely disable job editing
+// router.get("/edit/:id", jobController.getEditJobForm);
+// router.post("/edit/:id", jobController.editJob);
+
+// Job status update route
+router.post("/updateStatus/:id", jobController.updateJobStatus);
+
+// Job details route
+router.get("/:id", auth, jobController.getJobDetails);
+
+// Delete job route
+router.delete("/:id", auth, jobController.deleteJob);
+
+// Add comment route
+router.post("/:id/comments", auth, jobController.addComment);
+
+// Add this new route for updating job skills
+router.patch("/jobs/:id/skills", jobController.updateJobSkills);
 
 module.exports = router;

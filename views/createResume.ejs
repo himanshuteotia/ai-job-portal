@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Resume</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .form-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+            color: #4CAF50;
+        }
+        .success-message, .error-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success-message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .error-message {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .job-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            display: none;
+        }
+        .job-details h3 {
+            margin-top: 0;
+            color: #2e7d32;
+        }
+        .job-details p {
+            margin: 8px 0;
+        }
+        .job-details .label {
+            font-weight: bold;
+            color: #666;
+        }
+        .preview-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .preview-section h3 {
+            margin-top: 0;
+            color: #2e7d32;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 8px;
+        }
+        .preview-content {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            color: #333;
+        }
+        .recruiter-input {
+            margin-top: 8px;
+        }
+        .recruiter-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .recruiter-input input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        .add-recruiter-btn {
+            background: none;
+            border: none;
+            color: #4CAF50;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            margin-left: 8px;
+        }
+        .add-recruiter-btn:hover {
+            text-decoration: underline;
+        }
+        .recruiter-details {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            background: white;
+            margin: 50px auto;
+            padding: 0;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .close {
+            font-size: 24px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #333;
+        }
+        .email-list {
+            margin-bottom: 10px;
+        }
+        .email-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-icon {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .form-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .email-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background: #fff;
+        }
+        .email-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            min-height: 35px;
+        }
+        .email-chip {
+            background: #e8f5e9;
+            border: 1px solid #4CAF50;
+            border-radius: 16px;
+            padding: 4px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .email-chip .remove-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        .email-chip .remove-btn:hover {
+            color: #d32f2f;
+        }
+        .email-input-container {
+            margin-top: 8px;
+        }
+        .email-input-container input {
+            width: 100%;
+            border: none;
+            padding: 8px 0;
+            outline: none;
+        }
+        .invalid-email {
+            border-color: #d32f2f;
+            background: #ffebee;
+        }
+        .subject-input-container {
+            position: relative;
+        }
+        .subject-input-container input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .subject-input-container input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        .subject-suggestions {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .subject-input-container input:focus + .subject-suggestions {
+            display: block;
+        }
+        .suggestion-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+        .suggestion-btn:hover {
+            background: #f5f5f5;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Jobs
+            </a>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1><i class="fas fa-file-alt"></i> Create Resume</h1>
+                <button onclick="openBulkSendModal()" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Bulk Send
+                </button>
+            </div>
+
+            <!-- Bulk Send Modal -->
+            <div id="bulkSendModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-paper-plane"></i> Bulk Send Resumes</h2>
+                        <span class="close" onclick="closeBulkSendModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="bulkSendForm">
+                            <div class="form-group">
+                                <label>Resume File:</label>
+                                <input type="file" id="resumeFile" accept=".pdf" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email Subject:</label>
+                                <div class="subject-input-container">
+                                    <input type="text" id="emailSubject" class="form-control" required>
+                                    <div class="subject-suggestions">
+                                        <button type="button" class="suggestion-btn" onclick="useSubjectTemplate('application')">
+                                            Application for [Position] - Himanshu Teotia
+                                        </button>
+                                        <button type="button" class="suggestion-btn" onclick="useSubjectTemplate('referral')">
+                                            Referral: Software Engineer Application - Himanshu Teotia
+                                        </button>
+                                        <button type="button" class="suggestion-btn" onclick="useSubjectTemplate('followup')">
+                                            Following up on [Position] Application - Himanshu Teotia
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email Body:</label>
+                                <textarea id="bulkEmailBody" rows="6" class="form-control" required>Dear Hiring Manager,
+
+Please find attached my resume for your consideration.
+
+Best regards,
+Himanshu Teotia</textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="email-header">
+                                    <label>Recipient Emails:</label>
+                                    <button type="button" class="btn-secondary" onclick="extractPendingEmails()">
+                                        <i class="fas fa-magic"></i> Extract from Pending Jobs
+                                    </button>
+                                </div>
+                                
+                                <div class="email-container">
+                                    <div id="emailList" class="email-list">
+                                        <!-- Email chips will be added here -->
+                                    </div>
+                                    <div class="email-input-container">
+                                        <input type="email" id="emailInput" class="form-control" 
+                                            placeholder="Type email and press Enter">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Send to All
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <form id="resumeForm">
+                <div class="form-group">
+                    <label for="jobSelect">Select Job:</label>
+                    <select id="jobSelect" name="jobId" required>
+                        <option value="">Choose a job...</option>
+                        <% jobs.forEach(job => { %>
+                            <option value="<%= job._id %>" 
+                                data-company="<%= job.companyName %>"
+                                data-title="<%= job.jobTitle %>"
+                                data-recruiter-name="<%= job.recruiterName || '' %>"
+                                data-recruiter-email="<%= job.recruiterEmail || '' %>"
+                                data-description="<%= job.jobDescription %>"
+                                data-skills="<%= job.skills.join(', ') %>">
+                                <%= job.companyName %> - <%= job.jobTitle %>
+                                (<%= job.recruiterName ? job.recruiterName : 'No recruiter' %>)
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div id="jobDetails" class="job-details">
+                    <h3>Job Details</h3>
+                    <p><span class="label">Company:</span> <span id="companyName"></span></p>
+                    <p><span class="label">Position:</span> <span id="jobTitle"></span></p>
+                    <p class="recruiter-details">
+                        <span class="label">Recruiter:</span> 
+                        <span id="recruiterName"></span>
+                        <div id="recruiterNameInput" class="recruiter-input" style="display: none;">
+                            <input type="text" id="recruiterNameField" placeholder="Enter recruiter name" class="form-control">
+                        </div>
+                    </p>
+                    <p class="recruiter-details">
+                        <span class="label">Recruiter Email:</span> 
+                        <span id="recruiterEmail"></span>
+                        <div id="recruiterEmailInput" class="recruiter-input" style="display: none;">
+                            <input type="email" id="recruiterEmailField" placeholder="Enter recruiter email" class="form-control">
+                        </div>
+                    </p>
+                    <p><span class="label">Required Skills:</span> <span id="jobSkills"></span></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalDescription">Additional Information for Resume:</label>
+                    <textarea id="additionalDescription" name="additionalDescription" 
+                        placeholder="Add any additional information you'd like to include in your resume..."></textarea>
+                </div>
+
+                <div class="preview-section">
+                    <h3>Resume Preview</h3>
+                    <div id="previewContent" class="preview-content">
+                        Select a job to see the resume preview...
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <h3>Email Preview</h3>
+                    <div id="emailPreviewContent" class="preview-content">
+                        Select a job to see the email preview...
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Create Resume & Send Email
+                </button>
+            </form>
+
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Creating resume and sending email...
+            </div>
+
+            <div class="success-message"></div>
+            <div class="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('jobSelect').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const jobDetails = document.getElementById('jobDetails');
+            const previewContent = document.getElementById('previewContent');
+            const emailPreviewContent = document.getElementById('emailPreviewContent');
+            
+            if (this.value) {
+                // Update job details
+                document.getElementById('companyName').textContent = selectedOption.dataset.company;
+                document.getElementById('jobTitle').textContent = selectedOption.dataset.title;
+                
+                // Handle recruiter name
+                const recruiterNameSpan = document.getElementById('recruiterName');
+                const recruiterNameInput = document.getElementById('recruiterNameInput');
+                if (selectedOption.dataset.recruiterName) {
+                    recruiterNameSpan.textContent = selectedOption.dataset.recruiterName;
+                    recruiterNameSpan.innerHTML = selectedOption.dataset.recruiterName + 
+                        ' <button class="add-recruiter-btn" onclick="toggleRecruiterNameEdit()"><i class="fas fa-edit"></i></button>';
+                    recruiterNameInput.style.display = 'none';
+                } else {
+                    recruiterNameSpan.innerHTML = 'Not specified <button class="add-recruiter-btn" onclick="toggleRecruiterNameEdit()"><i class="fas fa-plus"></i> Add</button>';
+                    recruiterNameInput.style.display = 'none';
+                }
+                
+                // Handle recruiter email
+                const recruiterEmailSpan = document.getElementById('recruiterEmail');
+                const recruiterEmailInput = document.getElementById('recruiterEmailInput');
+                if (selectedOption.dataset.recruiterEmail) {
+                    recruiterEmailSpan.textContent = selectedOption.dataset.recruiterEmail;
+                    recruiterEmailSpan.innerHTML = selectedOption.dataset.recruiterEmail + 
+                        ' <button class="add-recruiter-btn" onclick="toggleRecruiterEmailEdit()"><i class="fas fa-edit"></i></button>';
+                    recruiterEmailInput.style.display = 'none';
+                } else {
+                    recruiterEmailSpan.innerHTML = 'Not specified <button class="add-recruiter-btn" onclick="toggleRecruiterEmailEdit()"><i class="fas fa-plus"></i> Add</button>';
+                    recruiterEmailInput.style.display = 'none';
+                }
+                
+                document.getElementById('jobSkills').textContent = selectedOption.dataset.skills;
+                jobDetails.style.display = 'block';
+                
+                // Update both previews
+                updatePreviews();
+            } else {
+                jobDetails.style.display = 'none';
+                previewContent.textContent = 'Select a job to see the resume preview...';
+                emailPreviewContent.textContent = 'Select a job to see the email preview...';
+            }
+        });
+
+        function toggleRecruiterNameEdit() {
+            const input = document.getElementById('recruiterNameInput');
+            input.style.display = input.style.display === 'none' ? 'block' : 'none';
+            if (input.style.display === 'block') {
+                document.getElementById('recruiterNameField').focus();
+            }
+        }
+
+        function toggleRecruiterEmailEdit() {
+            const input = document.getElementById('recruiterEmailInput');
+            input.style.display = input.style.display === 'none' ? 'block' : 'none';
+            if (input.style.display === 'block') {
+                document.getElementById('recruiterEmailField').focus();
+            }
+        }
+
+        function getRecruiterDetails() {
+            const selectedOption = document.getElementById('jobSelect').options[
+                document.getElementById('jobSelect').selectedIndex
+            ];
+            
+            return {
+                name: document.getElementById('recruiterNameField').value || selectedOption.dataset.recruiterName || 'Hiring Manager',
+                email: document.getElementById('recruiterEmailField').value || selectedOption.dataset.recruiterEmail
+            };
+        }
+
+        function updatePreviews() {
+            updateResumePreview();
+            updateEmailPreview();
+        }
+
+        function updateResumePreview() {
+            const selectedOption = document.getElementById('jobSelect').options[
+                document.getElementById('jobSelect').selectedIndex
+            ];
+            const previewContent = document.getElementById('previewContent');
+            const additionalInfo = document.getElementById('additionalDescription').value;
+            
+            const preview = `
+<div style="text-align: center; margin-bottom: 20px;">
+    <h2 style="margin: 0;">HIMANSHU TEOTIA</h2>
+    <p style="margin: 5px 0;">Software Engineer</p>
+    <p style="margin: 5px 0; font-size: 0.9em;">
+        Email: himanshu.teotia@example.com<br>
+        Location: New Delhi, India<br>
+        LinkedIn: linkedin.com/in/himanshut
+    </p>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <h3 style="color: #2e7d32; border-bottom: 1px solid #4CAF50;">PROFESSIONAL SUMMARY</h3>
+    <p>Experienced software engineer with expertise in full-stack development, currently seeking the role of ${selectedOption.dataset.title} at ${selectedOption.dataset.company}.</p>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <h3 style="color: #2e7d32; border-bottom: 1px solid #4CAF50;">TECHNICAL SKILLS</h3>
+    <p>${selectedOption.dataset.skills}</p>
+</div>
+
+${additionalInfo ? `
+<div style="margin-bottom: 20px;">
+    <h3 style="color: #2e7d32; border-bottom: 1px solid #4CAF50;">ADDITIONAL INFORMATION</h3>
+    <p>${additionalInfo}</p>
+</div>
+` : ''}
+
+<div style="margin-bottom: 20px;">
+    <h3 style="color: #2e7d32; border-bottom: 1px solid #4CAF50;">WORK EXPERIENCE</h3>
+    <p><strong>Senior Software Engineer</strong> - XYZ Company<br>
+    <small>January 2020 - Present</small></p>
+    <ul style="margin-top: 5px;">
+        <li>Led development of multiple full-stack applications</li>
+        <li>Implemented CI/CD pipelines and improved deployment processes</li>
+        <li>Mentored junior developers and conducted code reviews</li>
+    </ul>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <h3 style="color: #2e7d32; border-bottom: 1px solid #4CAF50;">EDUCATION</h3>
+    <p><strong>Bachelor of Technology in Computer Science</strong><br>
+    <small>University Name - 2019</small></p>
+</div>`;
+            
+            previewContent.innerHTML = preview;
+        }
+
+        function updateEmailPreview() {
+            const selectedOption = document.getElementById('jobSelect').options[
+                document.getElementById('jobSelect').selectedIndex
+            ];
+            const emailPreviewContent = document.getElementById('emailPreviewContent');
+            const recruiterDetails = getRecruiterDetails();
+            
+            const emailPreview = `
+Dear ${recruiterDetails.name},
+
+Please find attached my resume for the ${selectedOption.dataset.title} position at ${selectedOption.dataset.company}.
+
+I look forward to discussing how my skills and experience align with your requirements.
+
+Best regards,
+Himanshu Teotia`;
+            
+            emailPreviewContent.innerHTML = emailPreview.replace(/\n/g, '<br>');
+        }
+
+        // Add event listeners for recruiter detail changes
+        document.getElementById('recruiterNameField').addEventListener('input', updatePreviews);
+        document.getElementById('recruiterEmailField').addEventListener('input', updatePreviews);
+        
+        // Update form submission to include recruiter details
+        document.getElementById('resumeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loadingDiv = document.querySelector('.loading');
+            const successMessage = document.querySelector('.success-message');
+            const errorMessage = document.querySelector('.error-message');
+            
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            
+            try {
+                const recruiterDetails = getRecruiterDetails();
+                const formData = {
+                    jobId: document.getElementById('jobSelect').value,
+                    additionalDescription: document.getElementById('additionalDescription').value,
+                    recruiterName: recruiterDetails.name,
+                    recruiterEmail: recruiterDetails.email
+                };
+                
+                if (!formData.recruiterEmail) {
+                    throw new Error('Recruiter email is required. Please add it before proceeding.');
+                }
+                
+                const response = await fetch('/create-resume/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    successMessage.textContent = data.message;
+                    successMessage.style.display = 'block';
+                } else {
+                    throw new Error(data.message || 'Failed to create resume');
+                }
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        });
+
+        // Add these new functions for bulk send functionality
+        function openBulkSendModal() {
+            document.getElementById('bulkSendModal').style.display = 'block';
+        }
+
+        function closeBulkSendModal() {
+            document.getElementById('bulkSendModal').style.display = 'none';
+        }
+
+        const emailInput = document.getElementById('emailInput');
+        const emailList = document.getElementById('emailList');
+        let emails = new Set();
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function addEmailChip(email) {
+            if (!email || !isValidEmail(email)) return;
+            
+            if (emails.has(email)) return;
+            emails.add(email);
+
+            const chip = document.createElement('div');
+            chip.className = 'email-chip';
+            chip.innerHTML = `
+                <span>${email}</span>
+                <button type="button" class="remove-btn" onclick="removeEmailChip(this, '${email}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            emailList.appendChild(chip);
+        }
+
+        function removeEmailChip(button, email) {
+            emails.delete(email);
+            button.closest('.email-chip').remove();
+        }
+
+        emailInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const email = this.value.trim();
+                
+                if (isValidEmail(email)) {
+                    addEmailChip(email);
+                    this.value = '';
+                    this.classList.remove('invalid-email');
+                } else {
+                    this.classList.add('invalid-email');
+                }
+            } else {
+                this.classList.remove('invalid-email');
+            }
+        });
+
+        async function extractPendingEmails() {
+            try {
+                const response = await fetch('/create-resume/pending-emails');
+                const data = await response.json();
+                
+                if (data.success) {
+                    emailList.innerHTML = ''; // Clear existing emails
+                    emails.clear(); // Clear the Set
+                    
+                    data.emails.forEach(email => {
+                        addEmailChip(email);
+                    });
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert('Error extracting emails: ' + error.message);
+            }
+        }
+
+        // Update form submission
+        document.getElementById('bulkSendForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (emails.size === 0) {
+                alert('Please add at least one email address.');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('resume', document.getElementById('resumeFile').files[0]);
+            formData.append('emailSubject', document.getElementById('emailSubject').value);
+            formData.append('emailBody', document.getElementById('bulkEmailBody').value);
+            formData.append('emails', JSON.stringify([...emails]));
+            
+            try {
+                const response = await fetch('/create-resume/bulk-send', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Emails sent successfully!');
+                    closeBulkSendModal();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert('Error sending emails: ' + error.message);
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('bulkSendModal');
+            if (event.target === modal) {
+                closeBulkSendModal();
+            }
+        }
+
+        function useSubjectTemplate(type) {
+            const subjectInput = document.getElementById('emailSubject');
+            const selectedJob = document.getElementById('jobSelect');
+            const jobTitle = selectedJob.options[selectedJob.selectedIndex]?.dataset?.title || '[Position]';
+            
+            let subject = '';
+            switch(type) {
+                case 'application':
+                    subject = `Application for ${jobTitle} - Himanshu Teotia`;
+                    break;
+                case 'referral':
+                    subject = 'Referral: Software Engineer Application - Himanshu Teotia';
+                    break;
+                case 'followup':
+                    subject = `Following up on ${jobTitle} Application - Himanshu Teotia`;
+                    break;
+            }
+            subjectInput.value = subject;
+        }
+
+        // Update subject when job selection changes
+        document.getElementById('jobSelect').addEventListener('change', function() {
+            if (this.value) {
+                const jobTitle = this.options[this.selectedIndex].dataset.title;
+                document.getElementById('emailSubject').value = 
+                    `Application for ${jobTitle} - Himanshu Teotia`;
+            }
+        });
+    </script>
+</body>
+</html> 

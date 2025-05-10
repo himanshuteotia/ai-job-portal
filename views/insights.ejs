@@ -105,9 +105,9 @@
     </style>
 </head>
 <body>
-    <a href="/" class="back-icon" title="Back to Job Listings">
+    <!-- <a href="/" class="back-icon" title="Back to Job Listings">
         <i class="fas fa-arrow-left"></i>
-    </a>
+    </a> -->
     <div class="container">
         <div class="header-container">
             <h1>Job Application Insights</h1>
@@ -115,36 +115,43 @@
                 <button type="submit" class="regenerate-btn">Regenerate Insights</button>
             </form>
         </div>
-        
-        <div class="insights-section">
-            <h2>AI Suggestions</h2>
-            <% suggestions.forEach(suggestion => { %>
-                <div class="suggestion">
-                    <i class="fas fa-lightbulb"></i> <%= suggestion %>
-                </div>
-            <% }); %>
+        <div class="insights-list-section">
+            <table style="width:100%;background:white;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.07);overflow:hidden;">
+                <thead style="background:#f0f4f8;">
+                    <tr>
+                        <th style="padding:12px 8px;text-align:left;">Date</th>
+                        <th style="padding:12px 8px;text-align:left;">Status Changes</th>
+                        <th style="padding:12px 8px;text-align:left;">Top Skills</th>
+                        <th style="padding:12px 8px;text-align:left;">AI Suggestions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% insights.forEach(insight => { %>
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:12px 8px;vertical-align:top;"><%= new Date(insight.date).toLocaleDateString() %></td>
+                            <td style="padding:12px 8px;vertical-align:top;">
+                                <div>Pending → In Process: <b><%= insight.statusChanges.Pending['In Process'] %></b></div>
+                                <div>Pending → Rejected: <b><%= insight.statusChanges.Pending.Rejected %></b></div>
+                                <div>Pending → Success: <b><%= insight.statusChanges.Pending.Success %></b></div>
+                            </td>
+                            <td style="padding:12px 8px;vertical-align:top;">
+                                <% (insight.techStats || []).slice(0,3).forEach(tech => { %>
+                                    <div style="margin-bottom:4px;">
+                                        <span style="font-weight:600;"><%= tech.name %></span>
+                                        <span style="color:#388e3c;font-weight:500;">(<%= (tech.successRate*100).toFixed(1) %>%)</span>
+                                    </div>
+                                <% }) %>
+                            </td>
+                            <td style="padding:12px 8px;vertical-align:top;">
+                                <% (insight.suggestions || []).forEach(suggestion => { %>
+                                    <div class="suggestion" style="margin-bottom:6px;"><i class="fas fa-lightbulb"></i> <%= suggestion %></div>
+                                <% }) %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
         </div>
-        
-        <div class="insights-section">
-            <h2>Technology Success Rates</h2>
-            <% techStats.forEach(tech => { %>
-                <div class="tech-stat">
-                    <span class="tech-name"><%= tech.name %></span>
-                    <div class="tech-stat-bar">
-                        <div class="tech-stat-fill" data-width="<%= tech.successRate * 100 %>"></div>
-                    </div>
-                    <span class="tech-stat-percentage"><%= (tech.successRate * 100).toFixed(1) %>%</span>
-                </div>
-            <% }); %>
-        </div>
-        
-        <div class="insights-section">
-            <h2>Application Status Changes</h2>
-            <p>Pending to In Process: <%= statusChanges.Pending['In Process'] %></p>
-            <p>Pending to Rejected: <%= statusChanges.Pending.Rejected %></p>
-        </div>
-        
-        <a href="/" class="action-btn">Back to Job Listings</a>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

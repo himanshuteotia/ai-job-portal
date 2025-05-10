@@ -1,0 +1,23 @@
+<div class="job-actions">
+    <div class="action-buttons" style="display: flex; gap: 12px; margin-bottom: 18px; align-items: center;">
+        <button id="delete-job-btn" class="btn btn-danger btn-block"><i class="fas fa-trash"></i> Delete Job</button>
+        <button id="link-notes-btn" class="btn btn-secondary btn-block"><i class="fas fa-link"></i> Link Notes</button>
+        <a href="/notes" id="openAddNoteModal" class="btn btn-primary btn-block" style="margin-left:auto;"><i class="fas fa-plus"></i> Add New Note</a>
+    </div>
+    <div class="linked-notes-section mt-3">
+        <h4 style="margin-bottom: 10px;">Linked Notes</h4>
+        <div id="linked-notes-chips" style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <% if (job.relatedNotes && job.relatedNotes.length > 0) { %>
+                <% job.relatedNotes.forEach(note => { %>
+                    <span class="note-chip" title="<%= note.content %>" data-note-id="<%= note._id %>">
+                        <i class="fas fa-sticky-note" style="margin-right:4px;color:#2196F3;"></i>
+                        <%= note.title || 'Untitled Note' %>
+                        <span class="unlink-note" data-note-id="<%= note._id %>" title="Unlink Note">&times;</span>
+                    </span>
+                <% }) %>
+            <% } else { %>
+                <span style="color:#aaa;font-size:0.98em;">No linked notes yet.</span>
+            <% } %>
+        </div>
+    </div>
+</div>
